@@ -5,7 +5,9 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Instances Management - Command Center</title>
-    <script src="/static/js/tailwind.js"></script>
+    <!-- Tailwind CSS - CDN for reliability -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="/static/css/styles.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
@@ -20,7 +22,11 @@
                         "surface-dark": "#161b22",
                         "neon-red": "#ff4d4d",
                         "neon-amber": "#ffb000",
-                        "neon-green": "#00ff9d"
+                        "neon-green": "#00ff9d",
+                        "neon-blue": "#2f81f7"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
                     },
                 },
             },
@@ -28,130 +34,138 @@
     </script>
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            background-color: #0b0e14; /* Fallback for dark mode */
+            color: white;
         }
     </style>
 </head>
 
-<body class="bg-background-dark text-white min-h-screen">
-    <header class="border-b border-white/10 bg-background-dark px-8 py-3 sticky top-0 z-50">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-8">
-                <div class="flex items-center gap-3">
-                    <div class="size-8 bg-primary rounded-lg flex items-center justify-center">
-                        <span class="material-symbols-outlined">shield_with_heart</span>
-                    </div>
-                    <h1 class="text-xl font-bold">Security Command Center</h1>
+<body class="text-slate-100 min-h-screen font-display selection:bg-neon-blue selection:text-white overflow-x-hidden">
+    
+    <!-- Floating Header -->
+    <header class="fixed top-4 left-4 right-4 z-50 glass-panel rounded-xl px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-8">
+            <div class="flex items-center gap-3">
+                <div class="size-8 bg-primary/20 rounded-lg flex items-center justify-center text-primary border border-primary/30 shadow-[0_0_15px_rgba(19,127,236,0.3)]">
+                    <span class="material-symbols-outlined">shield_with_heart</span>
                 </div>
-                <nav class="flex items-center gap-6">
-                    <a class="text-slate-500 hover:text-white text-sm" href="/">Dashboard</a>
-                    <a class="text-slate-500 hover:text-white text-sm" href="/alerts.html">Alerts</a>
-                    <a class="text-slate-500 hover:text-white text-sm" href="/mitigations.html">Mitigations</a>
-                    <a class="text-slate-500 hover:text-white text-sm" href="/assets.html">Assets</a>
-                    <a class="text-slate-500 hover:text-white text-sm" href="/reports.html">Reports</a>
-                    <a class="text-primary font-semibold text-sm" href="/users.html">Instances</a>
-                    <a class="text-slate-500 hover:text-white text-sm" href="/models.html">ML Models</a>
-                </nav>
+                <h1 class="text-lg font-bold tracking-tight text-white text-glow-blue">VibeCraft<span class="text-slate-500 font-normal">Security</span></h1>
             </div>
+            <nav class="hidden md:flex items-center gap-1 bg-white/5 rounded-lg p-1 border border-white/5">
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium" href="/">Dashboard</a>
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium" href="/alerts.html">Alerts</a>
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium" href="/mitigations.html">Mitigations</a>
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium" href="/assets.html">Assets</a>
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium" href="/reports.html">Reports</a>
+                <a class="px-4 py-1.5 rounded-md bg-primary/20 text-white text-xs font-bold shadow-[0_0_10px_rgba(19,127,236,0.2)]" href="/users.html">Instances</a>
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium" href="/models.html">ML Models</a>
+            </nav>
         </div>
     </header>
 
-    <main class="p-8 max-w-[1600px] mx-auto">
-        <div class="mb-6">
-            <h1 class="text-3xl font-bold mb-2">☁️ Instances Management</h1>
+    <main class="pt-24 px-6 pb-20 max-w-[1600px] mx-auto space-y-8">
+        <div class="mb-6 flex flex-col">
+            <h1 class="text-3xl font-bold mb-2 text-white text-glow-blue">☁️ Instances Management</h1>
             <p class="text-slate-400">Manage and monitor cloud instances running threat detection</p>
         </div>
 
         <!-- Statistics Cards -->
-        <div class="grid grid-cols-4 gap-4 mb-6">
-            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
-                <div class="text-slate-400 text-sm mb-2">Total Instances</div>
-                <div class="text-3xl font-bold text-white" id="total-devices">0</div>
-                <div class="text-xs text-slate-500 mt-2">Registered instances</div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <div class="glass-panel spotlight-card rounded-xl p-5 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 relative z-10">Total Instances</div>
+                <div class="text-3xl font-bold text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] relative z-10" id="total-devices">0</div>
+                <div class="text-xs text-slate-500 mt-2 relative z-10">Registered instances</div>
             </div>
-            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
-                <div class="text-slate-400 text-sm mb-2">Online</div>
-                <div class="text-3xl font-bold text-neon-green" id="online-devices">0</div>
-                <div class="text-xs text-slate-500 mt-2">Active connections</div>
+            <div class="glass-panel spotlight-card rounded-xl p-5 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-neon-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 relative z-10">Online</div>
+                <div class="text-3xl font-bold text-neon-green drop-shadow-[0_0_8px_rgba(0,255,157,0.4)] relative z-10" id="online-devices">0</div>
+                <div class="text-xs text-slate-500 mt-2 relative z-10">Active connections</div>
             </div>
-            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
-                <div class="text-slate-400 text-sm mb-2">Offline</div>
-                <div class="text-3xl font-bold text-slate-400" id="offline-devices">0</div>
-                <div class="text-xs text-slate-500 mt-2">Inactive instances</div>
+            <div class="glass-panel spotlight-card rounded-xl p-5 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 relative z-10">Offline</div>
+                <div class="text-3xl font-bold text-slate-400 relative z-10" id="offline-devices">0</div>
+                <div class="text-xs text-slate-500 mt-2 relative z-10">Inactive instances</div>
             </div>
-            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
-                <div class="text-slate-400 text-sm mb-2">Total Threats</div>
-                <div class="text-3xl font-bold text-neon-red" id="total-threats">0</div>
-                <div class="text-xs text-slate-500 mt-2">Detected across all instances</div>
+            <div class="glass-panel spotlight-card rounded-xl p-5 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-neon-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 relative z-10">Total Threats</div>
+                <div class="text-3xl font-bold text-neon-red drop-shadow-[0_0_8px_rgba(255,77,77,0.4)] relative z-10" id="total-threats">0</div>
+                <div class="text-xs text-slate-500 mt-2 relative z-10">Detected across all instances</div>
             </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Device Registration Form -->
-            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
-                <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <div class="glass-panel spotlight-card rounded-xl p-6 h-fit">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2 text-white">
                     <span class="material-symbols-outlined text-primary">add_circle</span>
-                    Add New Instance / Device
+                    Add New Instance
                 </h2>
-                <form id="device-form" class="space-y-4">
-                    <div>
-                        <label class="text-sm text-slate-400 block mb-1">Instance Name</label>
+                <form id="device-form" class="space-y-5">
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Instance Name</label>
                         <input type="text" id="device-name" required
-                            class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-primary focus:outline-none"
-                            placeholder="Our Instance" />
+                            class="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-primary focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all placeholder:text-slate-600 text-sm"
+                            placeholder="e.g. Production Web Server" />
                     </div>
-                    <div>
-                        <label class="text-sm text-slate-400 block mb-1">IP Address</label>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">IP Address</label>
                         <input type="text" id="ip-address" required
-                            class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-primary focus:outline-none"
+                            class="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-primary focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all placeholder:text-slate-600 text-sm font-mono"
                             placeholder="192.168.1.100" />
                     </div>
-                    <div>
-                        <label class="text-sm text-slate-400 block mb-1">SSH Port</label>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">SSH Port</label>
                         <input type="number" id="port" value="8022"
-                            class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-primary focus:outline-none"
+                            class="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-primary focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all placeholder:text-slate-600 text-sm font-mono"
                             placeholder="8022" />
                     </div>
-                    <div>
-                        <label class="text-sm text-slate-400 block mb-1">Username</label>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Username</label>
                         <input type="text" id="username" required
-                            class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-primary focus:outline-none"
-                            placeholder="termux" />
+                            class="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-primary focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all placeholder:text-slate-600 text-sm font-mono"
+                            placeholder="root" />
                     </div>
-                    <div>
-                        <label class="text-sm text-slate-400 block mb-1">Password</label>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Password</label>
                         <input type="password" id="password" required
-                            class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-primary focus:outline-none"
-                            placeholder="********" />
+                            class="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-primary focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all placeholder:text-slate-600 text-sm font-mono"
+                            placeholder="••••••••" />
                     </div>
                     <button type="submit"
-                        class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined">cloud</span>
+                        class="w-full bg-primary hover:bg-primary/80 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(19,127,236,0.2)] mt-2">
+                        <span class="material-symbols-outlined">cloud_upload</span>
                         Register Instance
                     </button>
                 </form>
-                <div id="form-message" class="mt-4 text-sm hidden"></div>
+                <div id="form-message" class="mt-4 text-xs font-bold p-3 rounded-lg hidden text-center"></div>
             </div>
 
             <!-- Registered Devices List -->
-            <div class="col-span-2 bg-surface-dark border border-white/5 rounded-xl p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-bold flex items-center gap-2">
+            <div class="lg:col-span-2 glass-panel rounded-xl p-6 flex flex-col h-[700px] overflow-hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-lg font-bold flex items-center gap-2 text-white">
                         <span class="material-symbols-outlined text-neon-green">cloud_queue</span>
                         Registered Instances
                     </h2>
                     <button onclick="refreshDevices()"
-                        class="text-sm bg-white/5 hover:bg-white/10 px-4 py-2 rounded-lg transition-all flex items-center gap-2">
+                        class="text-xs bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1.5 rounded-lg transition-all flex items-center gap-2 text-slate-300 font-bold uppercase tracking-wider">
                         <span class="material-symbols-outlined text-sm">refresh</span>
                         Refresh
                     </button>
                 </div>
 
-                <div id="devices-list" class="space-y-3 max-h-[600px] overflow-y-auto">
+                <div id="devices-list" class="space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-2">
                     <!-- Devices will be loaded here dynamically -->
-                    <div class="text-center text-slate-500 py-8">
-                        <span class="material-symbols-outlined text-4xl mb-2 block">cloud_off</span>
-                        No instances registered yet
+                    <div class="h-full flex flex-col items-center justify-center text-slate-500">
+                        <div class="size-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                            <span class="material-symbols-outlined text-3xl opacity-50">cloud_off</span>
+                        </div>
+                        <div class="text-sm font-medium">No instances registered yet</div>
+                        <div class="text-xs opacity-50 mt-1">Add a new instance to get started</div>
                     </div>
                 </div>
             </div>
@@ -160,81 +174,80 @@
 
     <!-- Trigger Payload Modal -->
     <div id="trigger-modal"
-        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center">
-        <div class="bg-surface-dark border border-white/10 rounded-xl p-6 max-w-md w-full mx-4">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">🎯 Trigger Test Payload</h3>
-                <button onclick="closeTriggerModal()" class="text-slate-400 hover:text-white">
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center transition-opacity duration-300">
+        <div class="glass-panel border border-white/10 rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl relative overflow-hidden">
+            <!-- Modal glow effect -->
+            <div class="absolute top-0 right-0 size-64 bg-primary/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+
+            <div class="flex justify-between items-center mb-6 relative z-10">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <span class="material-symbols-outlined text-neon-red">warning</span>
+                    Trigger Test Payload
+                </h3>
+                <button onclick="closeTriggerModal()" class="text-slate-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 rounded-lg p-1">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
 
-            <div class="mb-4">
-                <p class="text-sm text-slate-400 mb-2">Target Instance: <span id="modal-device-name"
-                        class="text-white font-semibold"></span></p>
-                <p class="text-xs text-slate-500">Select an attack type to trigger a test payload and observe automated
-                    mitigation</p>
+            <div class="mb-6 relative z-10">
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider mb-2">Target Instance</p>
+                <div class="bg-black/40 border border-white/10 rounded-lg p-3 flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">dns</span>
+                    <span id="modal-device-name" class="text-white font-mono font-bold"></span>
+                </div>
+                <p class="text-xs text-slate-500 mt-3">Select an attack type below to simulate a threat and test the automated mitigation response.</p>
             </div>
 
-            <div class="space-y-3 mb-6">
+            <div class="space-y-3 relative z-10">
                 <button onclick="triggerPayload('dos')"
-                    class="w-full bg-neon-red/20 hover:bg-neon-red/30 border border-neon-red/50 text-white p-4 rounded-lg transition-all text-left">
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-neon-red">warning</span>
-                        <div>
-                            <div class="font-bold">DoS Attack</div>
-                            <div class="text-xs text-slate-400">High traffic rate, large bytes</div>
-                        </div>
+                    class="w-full bg-gradient-to-r from-neon-red/10 to-transparent hover:from-neon-red/20 border border-neon-red/30 text-white p-4 rounded-xl transition-all text-left flex items-center gap-4 group">
+                    <span class="material-symbols-outlined text-neon-red group-hover:scale-110 transition-transform">warning</span>
+                    <div>
+                        <div class="font-bold text-sm group-hover:text-neon-red transition-colors">DoS Attack</div>
+                        <div class="text-[10px] text-slate-400">High traffic rate simulation</div>
                     </div>
                 </button>
 
                 <button onclick="triggerPayload('exploit')"
-                    class="w-full bg-neon-amber/20 hover:bg-neon-amber/30 border border-neon-amber/50 text-white p-4 rounded-lg transition-all text-left">
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-neon-amber">bug_report</span>
-                        <div>
-                            <div class="font-bold">Exploit Attack</div>
-                            <div class="text-xs text-slate-400">Large packet sizes, TCP exploits</div>
-                        </div>
+                    class="w-full bg-gradient-to-r from-neon-amber/10 to-transparent hover:from-neon-amber/20 border border-neon-amber/30 text-white p-4 rounded-xl transition-all text-left flex items-center gap-4 group">
+                    <span class="material-symbols-outlined text-neon-amber group-hover:scale-110 transition-transform">bug_report</span>
+                    <div>
+                        <div class="font-bold text-sm group-hover:text-neon-amber transition-colors">Exploit Attack</div>
+                        <div class="text-[10px] text-slate-400">Malicious payload injection</div>
                     </div>
                 </button>
 
                 <button onclick="triggerPayload('reconnaissance')"
-                    class="w-full bg-primary/20 hover:bg-primary/30 border border-primary/50 text-white p-4 rounded-lg transition-all text-left">
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-primary">radar</span>
-                        <div>
-                            <div class="font-bold">Reconnaissance/Port Scan</div>
-                            <div class="text-xs text-slate-400">High connection attempts</div>
-                        </div>
+                    class="w-full bg-gradient-to-r from-primary/10 to-transparent hover:from-primary/20 border border-primary/30 text-white p-4 rounded-xl transition-all text-left flex items-center gap-4 group">
+                    <span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">radar</span>
+                    <div>
+                        <div class="font-bold text-sm group-hover:text-primary transition-colors">Reconnaissance</div>
+                        <div class="text-[10px] text-slate-400">Port scanning & enumeration</div>
                     </div>
                 </button>
 
                 <button onclick="triggerPayload('backdoor')"
-                    class="w-full bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/50 text-white p-4 rounded-lg transition-all text-left">
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-purple-400">vpn_key</span>
-                        <div>
-                            <div class="font-bold">Backdoor</div>
-                            <div class="text-xs text-slate-400">Long duration, large traffic</div>
-                        </div>
+                    class="w-full bg-gradient-to-r from-purple-500/10 to-transparent hover:from-purple-500/20 border border-purple-500/30 text-white p-4 rounded-xl transition-all text-left flex items-center gap-4 group">
+                    <span class="material-symbols-outlined text-purple-400 group-hover:scale-110 transition-transform">vpn_key</span>
+                    <div>
+                        <div class="font-bold text-sm group-hover:text-purple-400 transition-colors">Backdoor</div>
+                        <div class="text-[10px] text-slate-400">Persistent access simulation</div>
                     </div>
                 </button>
 
                 <button onclick="triggerPayload('normal')"
-                    class="w-full bg-neon-green/20 hover:bg-neon-green/30 border border-neon-green/50 text-white p-4 rounded-lg transition-all text-left">
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-neon-green">check_circle</span>
-                        <div>
-                            <div class="font-bold">Normal Traffic</div>
-                            <div class="text-xs text-slate-400">Benign network activity</div>
-                        </div>
+                    class="w-full bg-gradient-to-r from-neon-green/10 to-transparent hover:from-neon-green/20 border border-neon-green/30 text-white p-4 rounded-xl transition-all text-left flex items-center gap-4 group">
+                    <span class="material-symbols-outlined text-neon-green group-hover:scale-110 transition-transform">check_circle</span>
+                    <div>
+                        <div class="font-bold text-sm group-hover:text-neon-green transition-colors">Normal Traffic</div>
+                        <div class="text-[10px] text-slate-400">Benign network activity</div>
                     </div>
                 </button>
             </div>
         </div>
     </div>
 
+    <script src="/static/js/ui.js"></script>
     <script>
         const API_BASE = window.location.origin;
         let devices = [];
@@ -258,6 +271,11 @@
                 password: document.getElementById('password').value
             };
 
+            const messageEl = document.getElementById('form-message');
+            messageEl.classList.remove('hidden');
+            messageEl.className = 'mt-4 text-xs font-bold p-3 rounded-lg text-center bg-white/5 text-slate-300 animate-pulse';
+            messageEl.textContent = 'Hardware interfacing...';
+
             try {
                 const response = await fetch(`${API_BASE}/api/users`, {
                     method: 'POST',
@@ -269,11 +287,9 @@
 
                 const result = await response.json();
 
-                const messageEl = document.getElementById('form-message');
                 if (result.success) {
-                    messageEl.className = 'mt-4 text-sm text-neon-green border border-neon-green/30 bg-neon-green/10 p-3 rounded-lg';
+                    messageEl.className = 'mt-4 text-xs font-bold p-3 rounded-lg text-center bg-neon-green/10 text-neon-green border border-neon-green/20';
                     messageEl.textContent = '✅ Instance registered successfully!';
-                    messageEl.classList.remove('hidden');
 
                     // Clear form
                     document.getElementById('device-form').reset();
@@ -285,16 +301,13 @@
                         messageEl.classList.add('hidden');
                     }, 2000);
                 } else {
-                    messageEl.className = 'mt-4 text-sm text-neon-red border border-neon-red/30 bg-neon-red/10 p-3 rounded-lg';
+                    messageEl.className = 'mt-4 text-xs font-bold p-3 rounded-lg text-center bg-neon-red/10 text-neon-red border border-neon-red/20';
                     messageEl.textContent = `❌ Error: ${result.error}`;
-                    messageEl.classList.remove('hidden');
                 }
             } catch (error) {
                 console.error('Error registering device:', error);
-                const messageEl = document.getElementById('form-message');
-                messageEl.className = 'mt-4 text-sm text-neon-red border border-neon-red/30 bg-neon-red/10 p-3 rounded-lg';
+                messageEl.className = 'mt-4 text-xs font-bold p-3 rounded-lg text-center bg-neon-red/10 text-neon-red border border-neon-red/20';
                 messageEl.textContent = `❌ Failed to connect to server`;
-                messageEl.classList.remove('hidden');
             }
         });
 
@@ -320,9 +333,12 @@
 
             if (devicesList.length === 0) {
                 container.innerHTML = `
-                    <div class="text-center text-slate-500 py-8">
-                        <span class="material-symbols-outlined text-4xl mb-2 block">cloud_off</span>
-                        No instances registered yet
+                    <div class="h-full flex flex-col items-center justify-center text-slate-500">
+                        <div class="size-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                             <span class="material-symbols-outlined text-3xl opacity-50">cloud_off</span>
+                        </div>
+                        <div class="text-sm font-medium">No instances registered yet</div>
+                        <div class="text-xs opacity-50 mt-1">Add a new instance to get started</div>
                     </div>
                 `;
                 return;
@@ -331,54 +347,57 @@
             container.innerHTML = devicesList.map(device => {
                 const statusColor = device.status === 'online' ? 'neon-green' : 'slate-400';
                 const statusIcon = device.status === 'online' ? 'check_circle' : 'circle';
+                 // Map color names to hex for rgba
+                 const statusGlow = device.status === 'online' ? 'shadow-[0_0_10px_rgba(0,255,157,0.3)]' : '';
+                 const borderClass = device.status === 'online' ? 'border-neon-green/30' : 'border-white/10';
                 const lastSeen = new Date(device.last_seen).toLocaleString();
 
                 return `
-                    <div class="bg-white/5 border border-white/10 rounded-lg p-4 hover:border-primary/30 transition-all cursor-pointer" onclick="viewInstanceDetails('${device.device_id}')">
+                    <div class="glass-panel spotlight-card rounded-xl p-4 hover:border-primary/50 transition-all cursor-pointer group" onclick="viewInstanceDetails('${device.device_id}')">
                         <div class="flex justify-between items-start mb-3">
-                            <div class="flex items-center gap-3">
-                                <div class="size-12 bg-primary/20 rounded-lg flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-primary">cloud</span>
+                            <div class="flex items-center gap-4">
+                                <div class="size-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(19,127,236,0.1)]">
+                                    <span class="material-symbols-outlined text-primary">dns</span>
                                 </div>
                                 <div>
-                                    <div class="font-bold text-white">${device.device_name}</div>
-                                    <div class="text-xs text-slate-500">${device.ip_address}:${device.port}</div>
+                                    <div class="font-bold text-white text-sm tracking-wide group-hover:text-primary transition-colors">${device.device_name}</div>
+                                    <div class="text-xs text-slate-500 font-mono mt-0.5">${device.ip_address}:${device.port}</div>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-sm text-${statusColor}">${statusIcon}</span>
-                                <span class="text-xs text-${statusColor} font-semibold uppercase">${device.status}</span>
+                            <div class="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-full border ${borderClass} ${statusGlow}">
+                                <span class="material-symbols-outlined text-[10px] text-${statusColor} ${device.status === 'online' ? 'animate-pulse' : ''}">circle</span>
+                                <span class="text-[10px] text-${statusColor} font-bold uppercase tracking-wider">${device.status}</span>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-3 gap-3 mb-3 text-xs">
+                        <div class="grid grid-cols-3 gap-3 mb-4 text-xs bg-black/20 rounded-lg p-3">
                             <div>
-                                <div class="text-slate-500">Username</div>
-                                <div class="text-white font-mono">${device.username}</div>
+                                <div class="text-slate-500 uppercase font-bold text-[10px] tracking-wider mb-1">User</div>
+                                <div class="text-slate-300 font-mono">${device.username}</div>
                             </div>
                             <div>
-                                <div class="text-slate-500">Last Seen</div>
-                                <div class="text-white">${lastSeen}</div>
+                                <div class="text-slate-500 uppercase font-bold text-[10px] tracking-wider mb-1">Last Seen</div>
+                                <div class="text-slate-300 truncate" title="${lastSeen}">${lastSeen.split(',')[1]}</div>
                             </div>
                             <div>
-                                <div class="text-slate-500">Threats Detected</div>
+                                <div class="text-slate-500 uppercase font-bold text-[10px] tracking-wider mb-1">Threats</div>
                                 <div class="text-neon-red font-bold">${device.metrics?.threats_detected || 0}</div>
                             </div>
                         </div>
 
                         <div class="flex gap-2">
                             <button onclick="event.stopPropagation(); viewInstanceDetails('${device.device_id}')"
-                                class="flex-1 bg-primary hover:bg-primary/90 text-white text-xs py-2 rounded transition-all flex items-center justify-center gap-1">
+                                class="flex-1 bg-white/5 hover:bg-white/10 text-white text-xs py-2 rounded-lg transition-all flex items-center justify-center gap-1 font-semibold border border-white/5">
                                 <span class="material-symbols-outlined text-sm">visibility</span>
-                                View Details
+                                Details
                             </button>
                             <button onclick="event.stopPropagation(); showTriggerPayloadModal('${device.device_id}', '${device.device_name}')"
-                                class="flex-1 bg-neon-red/20 hover:bg-neon-red/30 text-neon-red text-xs py-2 rounded transition-all flex items-center justify-center gap-1">
+                                class="flex-1 bg-neon-red/10 hover:bg-neon-red/20 text-neon-red text-xs py-2 rounded-lg transition-all flex items-center justify-center gap-1 font-semibold border border-neon-red/20 shadow-[0_0_10px_rgba(255,77,77,0.1)]">
                                 <span class="material-symbols-outlined text-sm">bolt</span>
-                                Trigger Payload
+                                Attack
                             </button>
                             <button onclick="event.stopPropagation(); deleteDevice('${device.device_id}')"
-                                class="bg-slate-600/20 hover:bg-slate-600/30 text-slate-400 text-xs px-4 py-2 rounded transition-all flex items-center justify-center">
+                                class="bg-slate-500/10 hover:bg-slate-500/20 text-slate-400 hover:text-white text-xs px-3 py-2 rounded-lg transition-all flex items-center justify-center border border-white/5">
                                 <span class="material-symbols-outlined text-sm">delete</span>
                             </button>
                         </div>
@@ -402,26 +421,6 @@
                 }
             } catch (error) {
                 console.error('Error loading statistics:', error);
-            }
-        }
-
-        // Test connection to device
-        async function testConnection(deviceId) {
-            const device = devices.find(d => d.device_id === deviceId);
-            if (!device) return;
-
-            alert(`Testing connection to ${device.device_name} (${device.ip_address})...\n\nThis is a placeholder. In production, this would SSH into the device.`);
-
-            // Update status to online (placeholder)
-            try {
-                await fetch(`${API_BASE}/api/users/${deviceId}/status`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: 'online' })
-                });
-                refreshDevices();
-            } catch (error) {
-                console.error('Error updating status:', error);
             }
         }
 
@@ -479,16 +478,15 @@
 
             // Show loading notification
             const messageEl = document.createElement('div');
-            messageEl.className = 'fixed top-4 right-4 z-50 bg-primary border border-primary/50 text-white p-4 rounded-lg shadow-xl';
+            messageEl.className = 'fixed top-4 right-4 z-50 glass-panel border border-primary/50 text-white p-4 rounded-xl shadow-2xl flex items-center gap-4 animate-in slide-in-from-right';
             messageEl.innerHTML = `
-                <div class="flex items-center gap-3">
-                    <div class="animate-spin">
-                        <span class="material-symbols-outlined">sync</span>
-                    </div>
-                    <div>
-                        <div class="font-bold">Triggering ${attackType.toUpperCase()} payload...</div>
-                        <div class="text-xs text-slate-300">Please wait</div>
-                    </div>
+                <div class="relative size-10 flex items-center justify-center">
+                    <span class="absolute inline-flex h-full w-full rounded-full bg-primary opacity-25 animate-ping"></span>
+                    <span class="material-symbols-outlined text-primary animate-spin">sync</span>
+                </div>
+                <div>
+                    <div class="font-bold text-sm">Injecting Payload...</div>
+                    <div class="text-xs text-slate-400">Targeting ${attackType.toUpperCase()} vector</div>
                 </div>
             `;
             document.body.appendChild(messageEl);
@@ -512,28 +510,49 @@
                     const successEl = document.createElement('div');
                     const isAttack = result.status === 'THREAT';
                     const bgColor = isAttack ? 'neon-red' : 'neon-green';
+                    const icon = isAttack ? 'warning' : 'check_circle';
 
-                    successEl.className = `fixed top-4 right-4 z-50 bg-${bgColor}/20 border border-${bgColor}/50 text-white p-4 rounded-lg shadow-xl max-w-md`;
+                    successEl.className = `fixed top-4 right-4 z-50 glass-panel border border-${bgColor}/50 text-white p-5 rounded-xl shadow-2xl max-w-md animate-in slide-in-from-right`;
+                    
+                    // Simple sound effect simulation via visual feedback
+                    successEl.style.boxShadow = `0 0 30px rgba(${isAttack ? '255,77,77' : '0,255,157'}, 0.3)`;
+
                     successEl.innerHTML = `
-                        <div class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-${bgColor}">${isAttack ? 'warning' : 'check_circle'}</span>
+                        <div class="flex items-start gap-4">
+                            <div class="size-10 rounded-full bg-${bgColor}/20 flex items-center justify-center border border-${bgColor}/30 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+                                <span class="material-symbols-outlined text-${bgColor}">${icon}</span>
+                            </div>
                             <div class="flex-1">
-                                <div class="font-bold mb-1">✅ ${result.message}</div>
+                                <div class="font-bold text-sm mb-1 text-white">${result.message}</div>
                                 ${isAttack ? `
-                                    <div class="text-xs text-slate-300 space-y-1">
-                                        <div>🎯 Attack Type: <span class="text-${bgColor} font-semibold">${result.detection_result.attack_type}</span></div>
-                                        <div>📊 Confidence: <span class="text-${bgColor} font-semibold">${(result.detection_result.confidence * 100).toFixed(1)}%</span></div>
-                                        <div>🛡️ Mitigation: <span class="text-neon-amber font-semibold">${result.mitigation.action}</span></div>
+                                    <div class="bg-black/30 rounded-lg p-3 border border-white/5 space-y-2 mt-2">
+                                        <div class="flex justify-between text-xs">
+                                            <span class="text-slate-400">Attack Vector</span>
+                                            <span class="text-${bgColor} font-bold font-mono">${result.detection_result.attack_type}</span>
+                                        </div>
+                                        <div class="flex justify-between text-xs">
+                                            <span class="text-slate-400">Confidence</span>
+                                            <div class="flex items-center gap-1">
+                                                <div class="h-1.5 w-16 bg-white/10 rounded-full overflow-hidden">
+                                                    <div class="h-full bg-${bgColor}" style="width: ${(result.detection_result.confidence * 100)}%"></div>
+                                                </div>
+                                                <span class="text-white font-mono">${(result.detection_result.confidence * 100).toFixed(0)}%</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between text-xs pt-1 border-t border-white/10">
+                                            <span class="text-slate-400">Action</span>
+                                            <span class="text-neon-amber font-bold uppercase tracking-wider">${result.mitigation.action}</span>
+                                        </div>
                                     </div>
                                 ` : `
-                                    <div class="text-xs text-slate-300">No threats detected, traffic is normal.</div>
+                                    <div class="text-xs text-slate-400 mt-1">System behavior is within normal parameters. No mitigation actions required.</div>
                                 `}
                                 <button onclick="this.parentElement.parentElement.parentElement.remove(); window.location.href='/instance-detail.html?id=${currentDeviceId}'" 
-                                    class="mt-2 text-xs bg-white/10 hover:bg-white/20 px-3 py-1 rounded transition-all">
-                                    View Details →
+                                    class="mt-3 w-full text-xs bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 rounded-lg transition-all font-semibold text-slate-300 hover:text-white">
+                                    View Incident Details
                                 </button>
                             </div>
-                            <button onclick="this.parentElement.parentElement.remove()" class="text-slate-400 hover:text-white">
+                            <button onclick="this.parentElement.parentElement.remove()" class="text-slate-500 hover:text-white transition-colors">
                                 <span class="material-symbols-outlined text-sm">close</span>
                             </button>
                         </div>

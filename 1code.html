@@ -6,8 +6,8 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Security Command Center Dashboard</title>
-    <!-- Tailwind CSS - Local copy for reliability -->
-    <script src="/static/js/tailwind.js"></script>
+    <!-- Tailwind CSS - CDN for reliability -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
         rel="stylesheet" />
     <link
@@ -45,6 +45,8 @@
 
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #0b0e14; /* Fallback for dark mode */
+            color: white;
         }
 
         .glow-red {
@@ -61,352 +63,316 @@
     </style>
 </head>
 
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
-    <!-- Top Navigation Bar -->
-    <header
-        class="flex items-center justify-between border-b border-white/10 bg-background-light dark:bg-background-dark px-8 py-3 sticky top-0 z-50">
+<body class="text-slate-100 min-h-screen font-display selection:bg-neon-blue selection:text-white overflow-x-hidden">
+    
+    <!-- Floating Top Navigation -->
+    <header class="fixed top-4 left-4 right-4 z-50 glass-panel bg-[#0b0e14]/60 backdrop-blur-xl rounded-xl px-6 py-3 flex items-center justify-between shadow-2xl border border-white/10">
         <div class="flex items-center gap-8">
             <div class="flex items-center gap-3">
-                <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                <div class="size-8 bg-neon-blue/20 rounded-lg flex items-center justify-center text-neon-blue border border-neon-blue/30 shadow-[0_0_15px_rgba(47,129,247,0.3)]">
                     <span class="material-symbols-outlined">shield_with_heart</span>
                 </div>
-                <h1 class="text-xl font-bold tracking-tight">Security Command Center</h1>
+                <h1 class="text-lg font-bold tracking-tight text-white text-glow-blue">VibeCraft<span class="text-slate-500 font-normal">Security</span></h1>
             </div>
-            <nav class="hidden md:flex items-center gap-6">
-                <a class="text-primary font-semibold text-sm" href="/">Dashboard</a>
-                <a class="text-slate-500 hover:text-white transition-colors text-sm" href="/alerts.html">Alerts</a>
-                <a class="text-slate-500 hover:text-white transition-colors text-sm"
-                    href="/mitigations.html">Mitigations</a>
-                <a class="text-slate-500 hover:text-white transition-colors text-sm" href="/assets.html">Assets</a>
-                <a class="text-slate-500 hover:text-white transition-colors text-sm" href="/reports.html">Reports</a>
-                <a class="text-slate-500 hover:text-white transition-colors text-sm" href="/users.html">Instances</a>
-                <a class="text-slate-500 hover:text-white transition-colors text-sm" href="/models.html">ML Models</a>
+            <nav class="hidden md:flex items-center gap-1 bg-white/5 rounded-lg p-1 border border-white/5 spotlight-card relative overflow-hidden" style="--spotlight-color: rgba(255, 255, 255, 0.2);">
+                <a class="px-4 py-1.5 rounded-md bg-neon-blue/20 text-white text-xs font-bold shadow-[0_0_10px_rgba(47,129,247,0.2)] relative z-10" href="/">Dashboard</a>
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium relative z-10" href="/alerts.html">Alerts</a>
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium relative z-10" href="/mitigations.html">Mitigations</a>
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium relative z-10" href="/assets.html">Assets</a>
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium relative z-10" href="/reports.html">Reports</a>
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium relative z-10" href="/users.html">Instances</a>
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium relative z-10" href="/models.html">ML Models</a>
             </nav>
         </div>
         <div class="flex items-center gap-4">
-            <div class="relative w-64">
-                <span
-                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg">search</span>
-                <input
-                    class="w-full bg-surface-dark border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-1 focus:ring-primary placeholder:text-slate-600"
-                    placeholder="Search threats, IPs, or logs..." type="text" />
+            <div class="relative w-64 group">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-neon-blue transition-colors text-lg">search</span>
+                <input class="w-full rounded-lg pl-10 pr-4 py-2 text-xs" placeholder="Search threats, IPs, or logs..." type="text" />
             </div>
-            <button class="p-2 rounded-lg bg-surface-dark text-slate-400 hover:text-white relative">
-                <span class="material-symbols-outlined">notifications</span>
-                <span class="absolute top-2 right-2 size-2 bg-neon-red rounded-full"></span>
+            
+            <button id="header-attack-btn" onclick="showAttackMenu()" class="size-9 rounded-lg glass-panel flex items-center justify-center text-neon-red hover:bg-neon-red/10 border border-neon-red/30 transition-all shadow-[0_0_10px_rgba(248,81,73,0.2)]" title="Simulate Attack">
+                <span class="material-symbols-outlined text-xl">science</span>
             </button>
-            <button class="p-2 rounded-lg bg-surface-dark text-slate-400 hover:text-white">
-                <span class="material-symbols-outlined">settings</span>
-            </button>
+            
+
+
             <div class="h-8 w-px bg-white/10 mx-2"></div>
-            <div class="flex items-center gap-3">
-                <div class="text-right">
-                    <p class="text-xs font-bold">SOC Analyst</p>
-                    <p class="text-[10px] text-slate-500 uppercase tracking-widest">Level 3 Ops</p>
+            
+            <div class="flex items-center gap-3 pl-2 border-l border-white/5">
+                <div class="text-right leading-tight">
+                    <p class="text-xs font-bold text-white">SOC Analyst</p>
+                    <p class="text-[9px] text-neon-green uppercase tracking-widest font-bold">Level 3 Ops</p>
                 </div>
-                <div class="size-9 rounded-full bg-cover bg-center border border-white/20"
-                    data-alt="User avatar of a security professional"
+                <div class="size-9 rounded-full bg-cover bg-center border-2 border-white/10 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
                     style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBkWMMRG4cl1pdYBdf7YEiAmxLzi5xYoz07HLQ-jwdXG5isgfwOAf_DKg7DccpO5dtBJ1RPAoQaA6ECmDqd0EwtyY7nlNcAUIa5eBpfb3rEw2nI8uwTj9hsMvDryAYjDKPdaU0LcSunX0NIfjGSYBqdmHKa1DIfqG70tnGQwp7HNaCA9ctYXrU-XsN2uDQs-n1V_bhAFW0sud55wtM0vhpY_7YFjoJF7QA8XucZIJq261-6EpLC0V0AxdmQAutRc2-pz3WKn9D-nTd7');">
                 </div>
             </div>
         </div>
     </header>
-    <main class="p-8 max-w-[1600px] mx-auto space-y-6">
+
+    <main class="pt-24 px-6 pb-20 max-w-[1800px] mx-auto space-y-6">
+        
         <!-- KPI Metrics Row -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="bg-surface-dark border border-white/5 rounded-xl p-6 glow-amber">
-                <div class="flex justify-between items-start mb-4">
-                    <p class="text-slate-400 text-sm font-medium">AI Threat Score</p>
-                    <span class="material-symbols-outlined text-neon-amber">psychology</span>
+            <!-- Metric 1 -->
+            <div class="glass-panel spotlight-card rounded-xl p-6 relative group">
+                <div class="absolute inset-0 bg-neon-amber/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                <div class="flex justify-between items-start mb-4 relative z-10">
+                    <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">AI Threat Score</p>
+                    <span class="material-symbols-outlined text-neon-amber drop-shadow-[0_0_5px_rgba(255,176,0,0.5)]">psychology</span>
                 </div>
-                <div class="flex items-end gap-2">
-                    <p class="text-4xl font-bold tracking-tighter text-neon-amber">82<span
-                            class="text-lg text-slate-500">/100</span></p>
-                    <p class="text-neon-red text-xs font-bold mb-1 flex items-center gap-1">
-                        <span class="material-symbols-outlined text-xs">trending_up</span> +12%
-                    </p>
+                <div class="flex items-end gap-3 relative z-10">
+                    <p class="text-5xl font-bold tracking-tighter text-white text-glow-amber">82</p>
+                    <div class="pb-1">
+                        <span class="text-xs font-bold text-neon-red flex items-center gap-1 bg-neon-red/10 px-1.5 py-0.5 rounded border border-neon-red/20">
+                            <span class="material-symbols-outlined text-[10px]">trending_up</span> +12%
+                        </span>
+                    </div>
                 </div>
-                <div class="mt-4 w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
-                    <div class="bg-neon-amber h-full rounded-full" style="width: 82%"></div>
+                <div class="mt-4 w-full bg-white/5 h-1 rounded-full overflow-hidden relative z-10">
+                    <div class="bg-neon-amber h-full rounded-full shadow-[0_0_10px_#ffb000]" style="width: 82%"></div>
                 </div>
-                <p class="text-[10px] text-slate-500 mt-2 uppercase font-bold tracking-wider">High Risk Elevation
-                    Detected</p>
             </div>
-            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
-                <div class="flex justify-between items-start mb-4">
-                    <p class="text-slate-400 text-sm font-medium">Total Alerts (24h)</p>
-                    <span class="material-symbols-outlined text-primary">warning</span>
+
+            <!-- Metric 2 -->
+            <div class="glass-panel spotlight-card rounded-xl p-6 relative group">
+                <div class="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-50"></div>
+                <div class="flex justify-between items-start mb-4 relative z-10">
+                    <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Total Alerts (24h)</p>
+                    <span class="material-symbols-outlined text-neon-blue drop-shadow-[0_0_5px_rgba(47,129,247,0.5)]">warning</span>
                 </div>
-                <div class="flex items-end gap-2">
-                    <p class="text-4xl font-bold tracking-tighter text-white">1,284</p>
-                    <p class="text-neon-green text-xs font-bold mb-1 flex items-center gap-1">
-                        <span class="material-symbols-outlined text-xs">trending_down</span> -5%
-                    </p>
+                <div class="flex items-end gap-3 relative z-10">
+                    <p class="text-5xl font-bold tracking-tighter text-white">1,284</p>
+                    <div class="pb-1">
+                        <span class="text-xs font-bold text-neon-green flex items-center gap-1 bg-neon-green/10 px-1.5 py-0.5 rounded border border-neon-green/20">
+                            <span class="material-symbols-outlined text-[10px]">trending_down</span> -5%
+                        </span>
+                    </div>
                 </div>
-                <div class="mt-4 flex gap-1">
-                    <div class="h-1 flex-1 bg-neon-red rounded-full"></div>
-                    <div class="h-1 flex-1 bg-neon-amber rounded-full"></div>
+                <div class="mt-4 flex gap-1 relative z-10 opacity-70">
+                    <div class="h-1 flex-1 bg-neon-red rounded-full shadow-[0_0_5px_#f85149]"></div>
+                    <div class="h-1 flex-1 bg-neon-amber rounded-full shadow-[0_0_5px_#d29922]"></div>
                     <div class="h-1 flex-[2] bg-white/10 rounded-full"></div>
                 </div>
-                <div class="flex justify-between mt-2">
-                    <span class="text-[10px] text-slate-500">24 Critical</span>
-                    <span class="text-[10px] text-slate-500">112 Warning</span>
+            </div>
+
+            <!-- Metric 3 -->
+            <div class="glass-panel spotlight-card rounded-xl p-6 relative group">
+                <div class="absolute inset-0 bg-neon-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                <div class="flex justify-between items-start mb-4 relative z-10">
+                    <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Active Mitigations</p>
+                    <span class="material-symbols-outlined text-neon-green drop-shadow-[0_0_5px_rgba(63,185,80,0.5)]">verified_user</span>
+                </div>
+                <div class="flex items-end gap-3 relative z-10">
+                    <p class="text-5xl font-bold tracking-tighter text-white text-glow-green">42</p>
+                    <div class="pb-1">
+                         <span class="text-[10px] font-bold text-neon-green border border-neon-green/30 px-2 py-0.5 rounded uppercase tracking-wider bg-neon-green/5">Stable</span>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-slate-500 relative z-10">
+                    Auto-neutralizing <span class="text-white font-bold border-b border-white/20">18 DDoS nodes</span>
                 </div>
             </div>
-            <div class="bg-surface-dark border border-white/5 rounded-xl p-6 glow-green">
-                <div class="flex justify-between items-start mb-4">
-                    <p class="text-slate-400 text-sm font-medium">Active Mitigations</p>
-                    <span class="material-symbols-outlined text-neon-green">verified_user</span>
+
+            <!-- Metric 4 -->
+            <div class="glass-panel spotlight-card rounded-xl p-6 relative">
+                <div class="flex justify-between items-start mb-4 relative z-10">
+                    <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Data Ingested</p>
+                    <span class="material-symbols-outlined text-slate-500">database</span>
                 </div>
-                <div class="flex items-end gap-2">
-                    <p class="text-4xl font-bold tracking-tighter text-neon-green">42</p>
-                    <span
-                        class="bg-neon-green/10 text-neon-green text-[10px] font-bold px-2 py-0.5 rounded uppercase mb-1">Stable</span>
+                <div class="flex items-end gap-3 relative z-10">
+                    <p class="text-5xl font-bold tracking-tighter text-white">1.2<span class="text-2xl text-slate-500 font-normal">PB</span></p>
                 </div>
-                <p class="text-xs text-slate-500 mt-4 leading-relaxed">
-                    Automated playbooks currently neutralizing <span class="text-white">18 DDoS nodes</span>.
-                </p>
-            </div>
-            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
-                <div class="flex justify-between items-start mb-4">
-                    <p class="text-slate-400 text-sm font-medium">Data Processed</p>
-                    <span class="material-symbols-outlined text-slate-400">database</span>
-                </div>
-                <div class="flex items-end gap-2">
-                    <p class="text-4xl font-bold tracking-tighter text-white">1.2 <span
-                            class="text-lg text-slate-500">PB</span></p>
-                    <p class="text-primary text-xs font-bold mb-1">+15%</p>
-                </div>
-                <div class="flex gap-2 mt-4 overflow-hidden">
-                    <div class="h-8 w-1 bg-primary/20 rounded-full"></div>
-                    <div class="h-8 w-1 bg-primary/40 rounded-full"></div>
-                    <div class="h-8 w-1 bg-primary/60 rounded-full"></div>
-                    <div class="h-8 w-1 bg-primary/80 rounded-full"></div>
-                    <div class="h-8 w-1 bg-primary rounded-full"></div>
-                    <div class="h-8 w-1 bg-primary rounded-full"></div>
+                <div class="flex gap-2 mt-4 overflow-hidden relative z-10 items-end h-4 opacity-60">
+                    <div class="h-[30%] w-1 bg-neon-blue rounded-full"></div>
+                    <div class="h-[50%] w-1 bg-neon-blue rounded-full"></div>
+                    <div class="h-[40%] w-1 bg-neon-blue rounded-full"></div>
+                    <div class="h-[70%] w-1 bg-neon-blue rounded-full"></div>
+                    <div class="h-[90%] w-1 bg-neon-blue rounded-full shadow-[0_0_8px_#2f81f7]"></div>
+                    <div class="h-[60%] w-1 bg-neon-blue rounded-full"></div>
                 </div>
             </div>
         </div>
+
         <!-- Main Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Global Threat Map (Left/Center Large) -->
+            
+            <!-- Global Threat Map -->
             <div class="lg:col-span-2 space-y-6">
-                <div
-                    class="bg-surface-dark border border-white/5 rounded-xl overflow-hidden flex flex-col min-h-[500px]">
-                    <div class="p-6 border-b border-white/5 flex items-center justify-between">
-                        <div>
+                <div class="glass-panel rounded-xl overflow-hidden flex flex-col min-h-[600px] relative border-neon-blue/20">
+                    <!-- Header -->
+                    <div class="absolute top-0 left-0 right-0 p-6 flex items-center justify-between z-10 pointer-events-none">
+                        <div class="pointer-events-auto">
+                           <!-- Left for potential future use -->
                         </div>
-                        <div class="flex gap-2">
-                            <span
-                                class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-neon-red">
-                                <span class="size-2 bg-neon-red rounded-full animate-pulse"></span> Attack Origin
+                        <div class="flex gap-4 pointer-events-auto bg-black/40 backdrop-blur-md rounded-full px-4 py-1.5 border border-white/10">
+                            <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-neon-red">
+                                <span class="size-2 bg-neon-red rounded-full animate-pulse shadow-[0_0_8px_#f85149]"></span> Live Threats
                             </span>
-                            <span
-                                class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-primary">
-                                <span class="size-2 bg-primary rounded-full"></span> Secure Node
+                            <span class="w-px h-3 bg-white/20"></span>
+                            <span class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-neon-green">
+                                <span class="size-2 bg-neon-green rounded-full shadow-[0_0_8px_#3fb950]"></span> Secured
                             </span>
                         </div>
                     </div>
-                    <div class="flex-1 relative bg-black/40"
-                        style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0); background-size: 24px 24px;">
+
+                    <!-- Map/Workflow Container -->
+                    <div class="flex-1 relative bg-black/20">
+                        <!-- Grid Background -->
+                        <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(var(--glass-border) 1px, transparent 1px); background-size: 40px 40px;"></div>
+                        
                         <!-- 3D Workflow Visualization Container -->
                         <div id="workflow-3d-container" class="absolute inset-0"></div>
 
                         <!-- Workflow Info Overlay -->
-                        <div
-                            class="absolute top-6 right-6 p-4 bg-surface-dark/90 backdrop-blur-md border border-white/10 rounded-lg max-w-xs">
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="text-xs font-bold">3D Workflow Pipeline</span>
-                                <span class="text-[10px] px-2 py-0.5 bg-primary/20 text-primary rounded">LIVE</span>
+                        <div class="absolute top-6 left-6 p-5 glass-panel border-l-2 border-l-neon-blue max-w-xs animate-float">
+                            <div class="flex items-center justify-between mb-4 border-b border-white/5 pb-2">
+                                <span class="text-xs font-bold tracking-widest uppercase text-neon-blue">Live Pipeline</span>
+                                <span class="text-[9px] px-2 py-0.5 bg-neon-green/10 text-neon-green border border-neon-green/20 rounded shadow-[0_0_10px_rgba(63,185,80,0.2)]">ACTIVE</span>
                             </div>
-                            <div class="space-y-2">
+                            <div class="space-y-3 font-mono">
                                 <div class="flex justify-between items-center text-xs">
-                                    <span class="text-slate-500">Detection Method:</span>
-                                    <span>AI + Rule-Based</span>
+                                    <span class="text-slate-500">Method</span>
+                                    <span class="text-white">Hybrid Neural Net</span>
                                 </div>
                                 <div class="flex justify-between items-center text-xs">
-                                    <span class="text-slate-500">Response Time:</span>
-                                    <span class="text-neon-green">42ms</span>
+                                    <span class="text-slate-500">Latency</span>
+                                    <span class="text-neon-green font-bold">42ms</span>
                                 </div>
                                 <div class="flex justify-between items-center text-xs">
-                                    <span class="text-slate-500">Accuracy:</span>
-                                    <span class="text-neon-green">95%</span>
+                                    <span class="text-slate-500">Confidence</span>
+                                    <span class="text-neon-blue font-bold">99.8%</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Risk Trend Line Chart -->
-                <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
-                    <div class="flex items-center justify-between mb-8">
+
+                <!-- Risk Trend Chart -->
+                <div class="glass-panel spotlight-card rounded-xl p-6">
+                   <div class="flex items-center justify-between mb-8">
                         <div>
-                            <h2 class="text-lg font-bold">Risk Trend (24h)</h2>
-                            <p class="text-xs text-slate-500">System-wide vulnerability oscillation</p>
+                            <h2 class="text-lg font-bold text-white">Vulnerability Oscillation</h2>
+                            <p class="text-xs text-slate-500">Real-time system entrophy monitor</p>
                         </div>
-                        <div class="flex bg-white/5 p-1 rounded-lg">
-                            <button
-                                class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-primary text-white shadow-lg">1h</button>
-                            <button
-                                class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded text-slate-500 hover:text-white">24h</button>
-                            <button
-                                class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded text-slate-500 hover:text-white">7d</button>
+                        <div class="flex bg-black/40 p-1 rounded-lg border border-white/5">
+                            <button class="px-4 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-neon-blue text-white shadow-lg">1h</button>
+                            <button class="px-4 py-1 text-[10px] font-bold uppercase tracking-wider rounded text-slate-500 hover:text-white transition-colors">24h</button>
+                            <button class="px-4 py-1 text-[10px] font-bold uppercase tracking-wider rounded text-slate-500 hover:text-white transition-colors">7d</button>
                         </div>
                     </div>
                     <div class="h-48 w-full relative">
-                        <svg class="w-full h-full" fill="none" preserveaspectratio="none" viewbox="0 0 800 150">
-                            <path d="M0 100 Q 100 80 200 120 T 400 40 T 600 90 T 800 20" fill="none" stroke="#137fec"
-                                stroke-linecap="round" stroke-width="3"></path>
-                            <path d="M0 100 Q 100 80 200 120 T 400 40 T 600 90 T 800 20 V 150 H 0 Z"
-                                fill="url(#chartGradient)" opacity="0.1"></path>
+                         <!-- Simplified SVG for visual demo -->
+                        <svg class="w-full h-full drop-shadow-[0_0_10px_rgba(47,129,247,0.3)]" fill="none" preserveaspectratio="none" viewbox="0 0 800 150">
+                            <path d="M0 100 Q 100 80 200 120 T 400 40 T 600 90 T 800 20" fill="none" stroke="#2f81f7" stroke-linecap="round" stroke-width="2"></path>
+                            <path d="M0 100 Q 100 80 200 120 T 400 40 T 600 90 T 800 20 V 150 H 0 Z" fill="url(#chartGradient)" opacity="0.2"></path>
                             <defs>
                                 <lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
-                                    <stop offset="0%" stop-color="#137fec"></stop>
-                                    <stop offset="100%" stop-color="#137fec" stop-opacity="0"></stop>
+                                    <stop offset="0%" stop-color="#2f81f7"></stop>
+                                    <stop offset="100%" stop-color="#2f81f7" stop-opacity="0"></stop>
                                 </lineargradient>
                             </defs>
                         </svg>
-                        <div class="flex justify-between mt-4 text-[10px] text-slate-500 font-bold px-2">
-                            <span>00:00</span><span>04:00</span><span>08:00</span><span>12:00</span><span>16:00</span><span>20:00</span><span>23:59</span>
-                        </div>
                     </div>
                 </div>
             </div>
-            <!-- Right Sidebar: AI Insights & Live Feed -->
+
+            <!-- Right Sidebar -->
             <div class="space-y-6">
-                <!-- AI Insights Panel -->
-                <div class="bg-surface-dark border border-white/5 rounded-xl flex flex-col h-full overflow-hidden">
-                    <div class="p-6 border-b border-white/5 flex items-center gap-3">
-                        <div class="size-8 rounded bg-primary/20 flex items-center justify-center text-primary">
-                            <span class="material-symbols-outlined text-xl">auto_awesome</span>
+                <!-- AI Insights -->
+                <div class="glass-panel spotlight-card rounded-xl flex flex-col h-[400px] overflow-hidden">
+                    <div class="p-6 border-b border-white/5 flex items-center gap-4 bg-white/2">
+                        <div class="size-8 rounded-lg bg-gradient-to-br from-neon-purple to-neon-blue flex items-center justify-center text-white shadow-lg">
+                            <span class="material-symbols-outlined text-lg">auto_awesome</span>
                         </div>
                         <div>
-                            <h2 class="text-md font-bold">AI Insights</h2>
-                            <p class="text-[10px] text-slate-500 uppercase tracking-widest">Natural Language Logic</p>
+                            <h2 class="text-sm font-bold text-white">VibeCraft AI</h2>
+                            <p class="text-[10px] text-slate-400 uppercase tracking-widest">Generative Analysis</p>
                         </div>
                     </div>
-                    <div class="p-6 space-y-6 flex-1">
-                        <div class="space-y-3">
-                            <div class="flex justify-between">
-                                <span
-                                    class="text-[10px] font-bold px-2 py-0.5 rounded bg-neon-red/10 text-neon-red uppercase">Critical</span>
-                                <span class="text-[10px] text-slate-500">2m ago</span>
+                    <div class="p-6 space-y-6 overflow-y-auto custom-scrollbar">
+                        <!-- Insight Item -->
+                        <div class="relative pl-4 border-l-2 border-neon-red/50">
+                            <div class="flex justify-between mb-1">
+                                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-neon-red/10 text-neon-red uppercase border border-neon-red/20">Critical</span>
+                                <span class="text-[10px] text-slate-500">Just now</span>
                             </div>
-                            <h3 class="text-sm font-bold text-slate-200">Emerging RDP Brute Force detected</h3>
-                            <p class="text-xs text-slate-500 leading-relaxed">
-                                AI identified a credential stuffing pattern targeting the <span
-                                    class="text-primary">Finance-Gateway-04</span> node. Traffic originating from 12
-                                distinct subnets in Eastern Europe.
+                            <h3 class="text-sm font-bold text-slate-200 mt-2">Targeted Brute Force</h3>
+                            <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+                                Pattern matches <span class="text-neon-blue">DarkNexus Botnet</span> signature. 128 IPs targeting Admin Gateway.
                             </p>
-                            <button class="text-[10px] font-bold text-primary flex items-center gap-1 hover:underline">
-                                START AUTO-QUARANTINE <span
-                                    class="material-symbols-outlined text-xs">chevron_right</span>
+                             <button class="mt-3 w-full py-1.5 rounded border border-neon-red/30 text-neon-red text-[10px] font-bold uppercase hover:bg-neon-red/10 transition-colors">
+                                Engage Countermeasures
                             </button>
                         </div>
-                        <div class="h-px bg-white/5"></div>
-                        <div class="space-y-3 opacity-80">
-                            <div class="flex justify-between">
-                                <span
-                                    class="text-[10px] font-bold px-2 py-0.5 rounded bg-neon-amber/10 text-neon-amber uppercase">Warning</span>
-                                <span class="text-[10px] text-slate-500">14m ago</span>
+
+                        <!-- Insight Item -->
+                        <div class="relative pl-4 border-l-2 border-neon-amber/50">
+                            <div class="flex justify-between mb-1">
+                                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-neon-amber/10 text-neon-amber uppercase border border-neon-amber/20">Warning</span>
+                                <span class="text-[10px] text-slate-500">15m ago</span>
                             </div>
-                            <h3 class="text-sm font-bold text-slate-200">Anomalous S3 Egress Spike</h3>
-                            <p class="text-xs text-slate-500 leading-relaxed">
-                                Unusual outbound data movement from <span
-                                    class="text-neon-amber">prod-backup-vault</span>. Volume exceeded 200% of the
-                                baseline for this timeframe.
+                            <h3 class="text-sm font-bold text-slate-200 mt-2">Data Exfiltration Risk</h3>
+                            <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+                                Unusual egress volume from <span class="text-white">db-shard-04</span>. Recommend protocol audit.
                             </p>
-                            <button
-                                class="text-[10px] font-bold text-slate-400 flex items-center gap-1 hover:text-white">
-                                INVESTIGATE LOGS <span class="material-symbols-outlined text-xs">open_in_new</span>
-                            </button>
-                        </div>
-                        <div class="h-px bg-white/5"></div>
-                        <div class="space-y-3 opacity-80">
-                            <div class="flex justify-between">
-                                <span
-                                    class="text-[10px] font-bold px-2 py-0.5 rounded bg-neon-amber/10 text-neon-amber uppercase">Warning</span>
-                                <span class="text-[10px] text-slate-500">45m ago</span>
-                            </div>
-                            <h3 class="text-sm font-bold text-slate-200">Credential Leak Detection</h3>
-                            <p class="text-xs text-slate-500 leading-relaxed">
-                                AI scraper matched 3 enterprise API keys on a public repository. Revocation recommended
-                                immediately.
-                            </p>
-                            <button
-                                class="text-[10px] font-bold text-slate-400 flex items-center gap-1 hover:text-white">
-                                VIEW GITHUB SOURCE <span class="material-symbols-outlined text-xs">link</span>
-                            </button>
                         </div>
                     </div>
                 </div>
-                <!-- Live Events Feed -->
-                <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+
+                <!-- Live Feed -->
+                <div class="glass-panel spotlight-card rounded-xl p-6 min-h-[300px]">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-sm font-bold flex items-center gap-2">
-                            <span class="size-2 bg-neon-green rounded-full"></span> Live Events
+                         <h2 class="text-sm font-bold flex items-center gap-2">
+                            <span class="relative flex size-2">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-green opacity-75"></span>
+                              <span class="relative inline-flex rounded-full size-2 bg-neon-green"></span>
+                            </span>
+                            Live Log Stream
                         </h2>
-                        <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">142
-                            Events/min</span>
                     </div>
-                    <div class="space-y-4 font-mono">
-                        <div class="text-[10px] border-l-2 border-neon-red pl-3 py-1 flex flex-col gap-1">
-                            <div class="flex justify-between text-slate-400">
-                                <span>14:32:01</span>
-                                <span class="text-neon-red">BLOCK_IP</span>
+                    <div class="space-y-4 font-mono text-xs">
+                         <div class="flex gap-3 items-start group">
+                            <span class="text-slate-600 text-[10px] mt-0.5">14:02:11</span>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                     <span class="text-neon-red font-bold">BLOCK</span>
+                                     <span class="text-slate-400 text-[10px]">192.168.4.22</span>
+                                </div>
+                                <p class="text-slate-500 text-[10px] mt-0.5 group-hover:text-slate-300 transition-colors">Unauthorized root access attempt</p>
                             </div>
-                            <p class="text-slate-200 truncate">45.22.112.55 attempt at /admin</p>
                         </div>
-                        <div class="text-[10px] border-l-2 border-primary pl-3 py-1 flex flex-col gap-1">
-                            <div class="flex justify-between text-slate-400">
-                                <span>14:31:58</span>
-                                <span class="text-primary">INFO</span>
+                         <div class="flex gap-3 items-start group">
+                            <span class="text-slate-600 text-[10px] mt-0.5">14:02:08</span>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                     <span class="text-neon-blue font-bold">AUDIT</span>
+                                     <span class="text-slate-400 text-[10px]">System</span>
+                                </div>
+                                <p class="text-slate-500 text-[10px] mt-0.5 group-hover:text-slate-300 transition-colors">Key rotation schedule completed</p>
                             </div>
-                            <p class="text-slate-200 truncate">S3 Bucket policy updated by ID:2910</p>
-                        </div>
-                        <div class="text-[10px] border-l-2 border-neon-green pl-3 py-1 flex flex-col gap-1">
-                            <div class="flex justify-between text-slate-400">
-                                <span>14:31:55</span>
-                                <span class="text-neon-green">RESOLVED</span>
-                            </div>
-                            <p class="text-slate-200 truncate">Malware sandbox task ID:8829 complete</p>
-                        </div>
-                        <div class="text-[10px] border-l-2 border-slate-700 pl-3 py-1 flex flex-col gap-1 opacity-50">
-                            <div class="flex justify-between text-slate-400">
-                                <span>14:31:40</span>
-                                <span class="text-slate-500">PING</span>
-                            </div>
-                            <p class="text-slate-200 truncate">Worker node health check OK</p>
                         </div>
                     </div>
-                    <button
-                        class="w-full mt-6 py-2 bg-white/5 hover:bg-white/10 text-slate-400 text-[10px] font-bold uppercase rounded transition-colors">
-                        View System Logs
-                    </button>
                 </div>
             </div>
         </div>
+
     </main>
-    <!-- Bottom Status Bar -->
-    <footer
-        class="fixed bottom-0 left-0 right-0 bg-background-dark/80 backdrop-blur-sm border-t border-white/5 px-8 py-2 flex items-center justify-between z-50">
-        <div class="flex items-center gap-6">
-            <div class="flex items-center gap-2 text-[10px] text-slate-500">
-                <span class="size-2 rounded-full bg-neon-green"></span>
-                API STATUS: OPERATIONAL
-            </div>
-            <div class="flex items-center gap-2 text-[10px] text-slate-500">
-                <span class="size-2 rounded-full bg-neon-green"></span>
-                LATENCY: 24ms
-            </div>
-        </div>
-        <div class="flex items-center gap-4 text-[10px] font-mono text-slate-500">
-            <span>Uptime: 99.999%</span>
-            <div class="h-3 w-px bg-white/10"></div>
-            <span>v2.4.1-stable</span>
+    
+    <!-- Floating Footer -->
+    <footer class="fixed bottom-4 left-4 z-50">
+        <div class="glass-panel px-4 py-2 rounded-full flex items-center gap-4 border-neon-green/20">
+            <span class="flex items-center gap-2 text-[10px] font-bold text-neon-green uppercase tracking-wider">
+                <span class="size-1.5 bg-neon-green rounded-full shadow-[0_0_5px_#3fb950]"></span> Operational
+            </span>
+             <div class="h-3 w-px bg-white/10"></div>
+             <span class="text-[10px] font-mono text-slate-400">v3.0.0-Glass</span>
         </div>
     </footer>
+
     <script src="dashboard.js"></script>
     <script src="workflow-3d.js"></script>
+    <script src="/static/js/ui.js"></script>
 </body>
 
 </html>

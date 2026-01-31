@@ -1,4 +1,50 @@
-/* Material Symbols Fallback - Using Unicode characters */
+/* =========================================
+   VibeCraft Premium Theme - Global Styles
+   ========================================= */
+
+:root {
+  /* --- Color Palette: Deep Void & Neons --- */
+  --bg-void: #050507;
+  --bg-void-gradient: radial-gradient(circle at 50% 0%, #1a1d2d 0%, #050507 80%);
+  
+  --glass-surface: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.1);
+  
+  /* Neons */
+  --neon-blue: #2f81f7;
+  --neon-purple: #a371f7;
+  --neon-red: #f85149;
+  --neon-green: #3fb950;
+  --neon-amber: #d29922;
+
+  /* Text */
+  --text-primary: #f0f6fc;
+  --text-secondary: #8b949e;
+  --text-tertiary: #484f58;
+
+  /* Spotlight Default */
+  --spotlight-color: rgba(255, 255, 255, 0.15);
+}
+
+/* --- Base Clean Up --- */
+body {
+  background-color: var(--bg-void);
+  background-image: var(--bg-void-gradient);
+  background-attachment: fixed; /* Parallax-like feel */
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* --- Typography --- */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.02em; /* Tighter for technical feel */
+}
+
+/* Material Symbols Fallback */
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined', sans-serif;
   font-weight: normal;
@@ -11,107 +57,89 @@
   white-space: nowrap;
   word-wrap: normal;
   direction: ltr;
-  font-feature-settings: 'liga';
-  -webkit-font-smoothing: antialiased;
 }
 
-/* Fallback: Use emoji/symbols if font doesn't load */
-.material-symbols-outlined::before {
-  content: attr(data-fallback);
+/* --- Utility: Glass Panels --- */
+.glass-panel {
+  background: var(--glass-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-/* Inter Font Fallback */
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.glass-panel:hover {
+  border-color: var(--glass-highlight);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
 }
 
-/* Custom animations */
-@keyframes pulse {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-  }
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
-  }
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
-  }
+/* --- Utility: Global Spotlight Effect --- */
+/* Requires JS to set --x and --y */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate; /* Create stacking context */
 }
 
-.node-pulse {
-  animation: pulse 2s infinite;
+.spotlight-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(
+    800px circle at var(--x, 50%) var(--y, 50%), 
+    var(--spotlight-color), 
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: -1;
 }
 
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.spotlight-card:hover::before {
+  opacity: 1;
 }
 
-/* Glow effects */
-.glow-red {
-  box-shadow: 0 0 15px rgba(255, 77, 77, 0.3);
-}
-
-.glow-green {
-  box-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
-}
-
-.glow-amber {
-  box-shadow: 0 0 15px rgba(255, 176, 0, 0.3);
-}
-
-/* Scrollbar styling for dark mode */
+/* --- Scrollbar --- */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
-
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+  background: var(--text-tertiary);
+  border-radius: 3px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--text-secondary);
 }
 
-/* Ensure minimum styling even if everything fails */
-html {
-  font-size: 16px;
+/* --- Animation Utilities --- */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
 
-html.dark {
-  background-color: #0b0e14;
-  color: #f1f5f9;
-}
+.text-glow-blue { text-shadow: 0 0 15px rgba(47, 129, 247, 0.5); }
+.text-glow-red { text-shadow: 0 0 15px rgba(248, 81, 73, 0.5); }
+.text-glow-green { text-shadow: 0 0 15px rgba(63, 185, 80, 0.5); }
 
-/* Backdrop blur support */
-.backdrop-blur-sm {
+/* --- Input/Form Glass --- */
+input, select, textarea {
+  background: rgba(0,0,0,0.3) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: white !important;
   backdrop-filter: blur(4px);
+  transition: all 0.2s;
 }
-
-.backdrop-blur-md {
-  backdrop-filter: blur(12px);
-}
-
-/* Focus states */
-input:focus,
-button:focus,
-select:focus,
-textarea:focus {
-  outline: 2px solid #137fec;
-  outline-offset: 2px;
-}
-
-/* Smooth transitions */
-* {
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+input:focus, select:focus, textarea:focus {
+  border-color: var(--neon-blue) !important;
+  box-shadow: 0 0 0 2px rgba(47, 129, 247, 0.2);
+  outline: none;
 }

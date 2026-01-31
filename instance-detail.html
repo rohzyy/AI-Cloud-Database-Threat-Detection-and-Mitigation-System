@@ -5,7 +5,9 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Instance Details - Command Center</title>
-    <script src="/static/js/tailwind.js"></script>
+    <!-- Tailwind CSS - CDN for reliability -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="/static/css/styles.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
@@ -20,7 +22,11 @@
                         "surface-dark": "#161b22",
                         "neon-red": "#ff4d4d",
                         "neon-amber": "#ffb000",
-                        "neon-green": "#00ff9d"
+                        "neon-green": "#00ff9d",
+                        "neon-blue": "#2f81f7"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
                     },
                 },
             },
@@ -28,263 +34,314 @@
     </script>
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            background-color: #0b0e14; /* Fallback for dark mode */
+            color: white;
         }
     </style>
 </head>
 
-<body class="bg-background-dark text-white min-h-screen">
-    <header class="border-b border-white/10 bg-background-dark px-8 py-3 sticky top-0 z-50">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-8">
-                <div class="flex items-center gap-3">
-                    <div class="size-8 bg-primary rounded-lg flex items-center justify-center">
-                        <span class="material-symbols-outlined">shield_with_heart</span>
-                    </div>
-                    <h1 class="text-xl font-bold">Security Command Center</h1>
+<body class="text-slate-100 min-h-screen font-display selection:bg-neon-blue selection:text-white overflow-x-hidden">
+    
+    <!-- Floating Header -->
+    <header class="fixed top-4 left-4 right-4 z-50 glass-panel rounded-xl px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-8">
+            <div class="flex items-center gap-3">
+                <div class="size-8 bg-primary/20 rounded-lg flex items-center justify-center text-primary border border-primary/30 shadow-[0_0_15px_rgba(19,127,236,0.3)]">
+                    <span class="material-symbols-outlined">shield_with_heart</span>
                 </div>
-                <nav class="flex items-center gap-6">
-                    <a class="text-slate-500 hover:text-white text-sm" href="/">Dashboard</a>
-                    <a class="text-slate-500 hover:text-white text-sm" href="/alerts.html">Alerts</a>
-                    <a class="text-slate-500 hover:text-white text-sm" href="/mitigations.html">Mitigations</a>
-                    <a class="text-slate-500 hover:text-white text-sm" href="/assets.html">Assets</a>
-                    <a class="text-slate-500 hover:text-white text-sm" href="/reports.html">Reports</a>
-                    <a class="text-primary font-semibold text-sm" href="/users.html">Instances</a>
-                    <a class="text-slate-500 hover:text-white text-sm" href="/models.html">ML Models</a>
-                </nav>
+                <h1 class="text-lg font-bold tracking-tight text-white text-glow-blue">VibeCraft<span class="text-slate-500 font-normal">Security</span></h1>
             </div>
+            <nav class="hidden md:flex items-center gap-1 bg-white/5 rounded-lg p-1 border border-white/5">
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium" href="/">Dashboard</a>
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium" href="/alerts.html">Alerts</a>
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium" href="/mitigations.html">Mitigations</a>
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium" href="/assets.html">Assets</a>
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium" href="/reports.html">Reports</a>
+                <a class="px-4 py-1.5 rounded-md bg-primary/20 text-white text-xs font-bold shadow-[0_0_10px_rgba(19,127,236,0.2)]" href="/users.html">Instances</a>
+                <a class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-medium" href="/models.html">ML Models</a>
+            </nav>
         </div>
     </header>
 
-    <main class="p-8 max-w-[1600px] mx-auto">
+    <main class="pt-24 px-6 pb-20 max-w-[1600px] mx-auto space-y-8">
         <!-- Breadcrumb -->
-        <div class="flex items-center gap-2 text-sm text-slate-400 mb-6">
-            <a href="/users.html" class="hover:text-white transition-colors">Instances</a>
-            <span class="material-symbols-outlined !text-sm">chevron_right</span>
-            <span class="text-white" id="breadcrumb-instance">Instance Details</span>
+        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+            <a href="/users.html" class="hover:text-primary transition-colors flex items-center gap-1">
+                <span class="material-symbols-outlined !text-sm">arrow_back</span>
+                Instances
+            </a>
+            <span class="text-slate-600">/</span>
+            <span class="text-white" id="breadcrumb-instance">Details</span>
         </div>
 
         <!-- Instance Header -->
-        <div class="mb-6 flex items-start justify-between">
-            <div class="flex items-center gap-4">
-                <div class="size-16 bg-primary/20 rounded-xl flex items-center justify-center">
-                    <span class="material-symbols-outlined text-primary !text-4xl">cloud</span>
+        <div class="glass-panel spotlight-card rounded-xl p-6 flex flex-col md:flex-row items-start justify-between gap-6">
+            <div class="flex items-center gap-6">
+                <div class="size-20 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20 shadow-[0_0_20px_rgba(19,127,236,0.15)] relative overflow-hidden group">
+                     <div class="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                    <span class="material-symbols-outlined text-primary !text-5xl relative z-10 group-hover:scale-110 transition-transform duration-300">dns</span>
                 </div>
                 <div>
-                    <h1 class="text-3xl font-bold mb-1" id="instance-name">Loading...</h1>
-                    <p class="text-slate-400" id="instance-ip">IP: ---.---.---.---</p>
-                    <div class="flex items-center gap-2 mt-2">
-                        <span class="material-symbols-outlined text-sm" id="status-icon">circle</span>
-                        <span class="text-xs font-semibold uppercase" id="status-text">Offline</span>
-                        <span class="text-xs text-slate-500" id="last-seen">Last seen: Never</span>
+                    <h1 class="text-3xl font-bold mb-1 text-white text-glow-blue" id="instance-name">Loading...</h1>
+                    <div class="flex items-center gap-3">
+                        <div class="px-2 py-0.5 bg-black/40 rounded border border-white/10 font-mono text-xs text-slate-400" id="instance-ip">IP: ---.---.---.---</div>
+                        <div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/40 border border-white/10">
+                            <span class="material-symbols-outlined text-[10px]" id="status-icon">circle</span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider" id="status-text">Offline</span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="flex gap-2">
-                <button onclick="refreshInstance()"
-                    class="bg-white/5 hover:bg-white/10 px-4 py-2 rounded-lg transition-all flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sm">refresh</span>
+            <div class="flex gap-3">
+                 <button onclick="refreshInstance()"
+                    class="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-4 py-2 rounded-lg transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
+                    <span class="material-symbols-outlined !text-sm">refresh</span>
                     Refresh
                 </button>
                 <button onclick="testConnection()"
-                    class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-2 rounded-lg transition-all flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sm">wifi_find</span>
+                    class="bg-primary/20 hover:bg-primary/30 border border-primary/40 text-primary hover:text-white px-4 py-2 rounded-lg transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(19,127,236,0.1)]">
+                    <span class="material-symbols-outlined !text-sm">wifi_find</span>
                     Test Connection
                 </button>
             </div>
         </div>
 
         <!-- Trigger Payload Section -->
-        <div class="mb-6 bg-gradient-to-r from-neon-red/10 to-primary/10 border border-neon-red/30 rounded-xl p-6">
-            <div class="flex justify-between items-center mb-4">
+        <div class="glass-panel spotlight-card rounded-xl p-6 border-l-4 border-l-neon-red/50 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-neon-red/5 to-transparent pointer-events-none"></div>
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 relative z-10">
                 <div>
-                    <h2 class="text-xl font-bold flex items-center gap-2">
+                    <h2 class="text-xl font-bold flex items-center gap-2 text-white">
                         <span class="material-symbols-outlined text-neon-red">bolt</span>
                         Trigger Test Payload
                     </h2>
-                    <p class="text-sm text-slate-400 mt-1">Send test attack payloads and observe automated mitigation
-                    </p>
+                    <p class="text-sm text-slate-400 mt-1">Simulate cyber-attacks to verify automated mitigation responses.</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-5 gap-3">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 relative z-10">
                 <button onclick="triggerInstancePayload('dos')"
-                    class="bg-neon-red/20 hover:bg-neon-red/30 border border-neon-red/50 text-white py-3 px-4 rounded-lg transition-all">
-                    <div class="text-center">
-                        <span class="material-symbols-outlined mb-1">warning</span>
-                        <div class="text-xs font-bold">DoS</div>
+                    class="group bg-neon-red/10 hover:bg-neon-red/20 border border-neon-red/30 text-white py-4 px-4 rounded-xl transition-all relative overflow-hidden">
+                    <div class="absolute inset-0 bg-neon-red/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                    <div class="relative z-10 flex flex-col items-center">
+                        <span class="material-symbols-outlined mb-2 text-neon-red group-hover:scale-110 transition-transform">warning</span>
+                        <div class="text-xs font-bold uppercase tracking-wider">DoS Attack</div>
                     </div>
                 </button>
                 <button onclick="triggerInstancePayload('exploit')"
-                    class="bg-neon-amber/20 hover:bg-neon-amber/30 border border-neon-amber/50 text-white py-3 px-4 rounded-lg transition-all">
-                    <div class="text-center">
-                        <span class="material-symbols-outlined mb-1">bug_report</span>
-                        <div class="text-xs font-bold">Exploit</div>
+                    class="group bg-neon-amber/10 hover:bg-neon-amber/20 border border-neon-amber/30 text-white py-4 px-4 rounded-xl transition-all relative overflow-hidden">
+                    <div class="absolute inset-0 bg-neon-amber/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                    <div class="relative z-10 flex flex-col items-center">
+                        <span class="material-symbols-outlined mb-2 text-neon-amber group-hover:scale-110 transition-transform">bug_report</span>
+                        <div class="text-xs font-bold uppercase tracking-wider">Exploit</div>
                     </div>
                 </button>
                 <button onclick="triggerInstancePayload('reconnaissance')"
-                    class="bg-primary/20 hover:bg-primary/30 border border-primary/50 text-white py-3 px-4 rounded-lg transition-all">
-                    <div class="text-center">
-                        <span class="material-symbols-outlined mb-1">radar</span>
-                        <div class="text-xs font-bold">Recon</div>
+                    class="group bg-primary/10 hover:bg-primary/20 border border-primary/30 text-white py-4 px-4 rounded-xl transition-all relative overflow-hidden">
+                    <div class="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                    <div class="relative z-10 flex flex-col items-center">
+                        <span class="material-symbols-outlined mb-2 text-primary group-hover:scale-110 transition-transform">radar</span>
+                        <div class="text-xs font-bold uppercase tracking-wider">Recon</div>
                     </div>
                 </button>
                 <button onclick="triggerInstancePayload('backdoor')"
-                    class="bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/50 text-white py-3 px-4 rounded-lg transition-all">
-                    <div class="text-center">
-                        <span class="material-symbols-outlined mb-1">vpn_key</span>
-                        <div class="text-xs font-bold">Backdoor</div>
+                    class="group bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-white py-4 px-4 rounded-xl transition-all relative overflow-hidden">
+                    <div class="absolute inset-0 bg-purple-500/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                    <div class="relative z-10 flex flex-col items-center">
+                        <span class="material-symbols-outlined mb-2 text-purple-400 group-hover:scale-110 transition-transform">vpn_key</span>
+                        <div class="text-xs font-bold uppercase tracking-wider">Backdoor</div>
                     </div>
                 </button>
                 <button onclick="triggerInstancePayload('normal')"
-                    class="bg-neon-green/20 hover:bg-neon-green/30 border border-neon-green/50 text-white py-3 px-4 rounded-lg transition-all">
-                    <div class="text-center">
-                        <span class="material-symbols-outlined mb-1">check_circle</span>
-                        <div class="text-xs font-bold">Normal</div>
+                    class="group bg-neon-green/10 hover:bg-neon-green/20 border border-neon-green/30 text-white py-4 px-4 rounded-xl transition-all relative overflow-hidden">
+                    <div class="absolute inset-0 bg-neon-green/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                    <div class="relative z-10 flex flex-col items-center">
+                        <span class="material-symbols-outlined mb-2 text-neon-green group-hover:scale-110 transition-transform">check_circle</span>
+                        <div class="text-xs font-bold uppercase tracking-wider text-neon-green">Normal</div>
                     </div>
                 </button>
             </div>
 
             <!-- Workflow Visualization -->
-            <div id="workflow-display" class="hidden mt-4 grid grid-cols-3 gap-4">
-                <div id="step-payload" class="bg-primary/20 border border-primary/50 rounded-lg p-4 text-center">
-                    <span class="material-symbols-outlined text-4xl text-primary mb-2">send</span>
-                    <div class="text-sm font-bold">Payload Sent</div>
-                    <div class="text-xs text-slate-400 mt-1" id="payload-info">-</div>
+            <div id="workflow-display" class="hidden mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+                <div id="step-payload" class="glass-panel border border-primary/30 rounded-lg p-5 text-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-primary/5"></div>
+                    <div class="relative z-10">
+                        <div class="size-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3 text-primary border border-primary/20">
+                            <span class="material-symbols-outlined text-2xl">send</span>
+                        </div>
+                        <div class="text-sm font-bold text-white uppercase tracking-wide">Payload Sent</div>
+                        <div class="text-xs text-primary font-mono mt-1" id="payload-info">-</div>
+                    </div>
                 </div>
-                <div id="step-detection" class="bg-white/5 border border-white/10 rounded-lg p-4 text-center">
-                    <span class="material-symbols-outlined text-4xl text-slate-500 mb-2">search</span>
-                    <div class="text-sm font-bold text-slate-500">Threat Detection</div>
-                    <div class="text-xs text-slate-400 mt-1" id="detection-info">-</div>
+                
+                <div class="hidden md:flex items-center justify-center text-slate-600">
+                    <span class="material-symbols-outlined text-2xl animate-pulse">arrow_forward</span>
                 </div>
-                <div id="step-mitigation" class="bg-white/5 border border-white/10 rounded-lg p-4 text-center">
-                    <span class="material-symbols-outlined text-4xl text-slate-500 mb-2">shield</span>
-                    <div class="text-sm font-bold text-slate-500">Mitigation</div>
-                    <div class="text-xs text-slate-400 mt-1" id="mitigation-info">-</div>
+                <!-- Hidden on MD to account for visual flow, grid system handles layout -->
+                <div class="hidden md:block absolute left-[33%] top-1/2 w-[2px] h-8 bg-slate-700 -translate-y-1/2"></div>
+                 
+                <div id="step-detection" class="glass-panel border border-white/10 rounded-lg p-5 text-center relative overflow-hidden">
+                    <div class="relative z-10">
+                         <div class="size-12 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-500 border border-white/10">
+                            <span class="material-symbols-outlined text-2xl">search</span>
+                        </div>
+                        <div class="text-sm font-bold text-slate-400 uppercase tracking-wide">Analysis</div>
+                        <div class="text-xs text-slate-500 mt-1" id="detection-info">Waiting...</div>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex items-center justify-center text-slate-600">
+                    <span class="material-symbols-outlined text-2xl animate-pulse">arrow_forward</span>
+                </div>
+
+                <div id="step-mitigation" class="glass-panel border border-white/10 rounded-lg p-5 text-center relative overflow-hidden">
+                    <div class="relative z-10">
+                         <div class="size-12 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-500 border border-white/10">
+                            <span class="material-symbols-outlined text-2xl">shield_lock</span>
+                        </div>
+                        <div class="text-sm font-bold text-slate-400 uppercase tracking-wide">Response</div>
+                        <div class="text-xs text-slate-500 mt-1" id="mitigation-info">Waiting...</div>
+                    </div>
                 </div>
             </div>
+            <!-- Custom CSS Grid override for the arrows visualization if needed, but simple grid is cleaner -->
+             <style>
+                #workflow-display { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+                @media (max-width: 768px) { #workflow-display { grid-template-columns: 1fr; } }
+            </style>
         </div>
 
         <!-- Statistics Cards -->
-        <div class="grid grid-cols-4 gap-4 mb-6">
-            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
-                <div class="text-slate-400 text-sm mb-2">Total Requests</div>
-                <div class="text-3xl font-bold text-white" id="total-requests">0</div>
-                <div class="text-xs text-slate-500 mt-2">All time activity</div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <div class="glass-panel spotlight-card rounded-xl p-5 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 relative z-10">Total Requests</div>
+                <div class="text-3xl font-bold text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] relative z-10" id="total-requests">0</div>
+                <div class="text-xs text-slate-500 mt-2 relative z-10">All time activity</div>
             </div>
-            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
-                <div class="text-slate-400 text-sm mb-2">Threats Detected</div>
-                <div class="text-3xl font-bold text-neon-red" id="threats-detected">0</div>
-                <div class="text-xs text-slate-500 mt-2">Security incidents</div>
+            <div class="glass-panel spotlight-card rounded-xl p-5 relative overflow-hidden group">
+                 <div class="absolute inset-0 bg-neon-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 relative z-10">Threats Detected</div>
+                <div class="text-3xl font-bold text-neon-red drop-shadow-[0_0_8px_rgba(255,77,77,0.4)] relative z-10" id="threats-detected">0</div>
+                <div class="text-xs text-slate-500 mt-2 relative z-10">Security incidents</div>
             </div>
-            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
-                <div class="text-slate-400 text-sm mb-2">Mitigations Applied</div>
-                <div class="text-3xl font-bold text-neon-amber" id="mitigations-applied">0</div>
-                <div class="text-xs text-slate-500 mt-2">Actions taken</div>
+            <div class="glass-panel spotlight-card rounded-xl p-5 relative overflow-hidden group">
+                 <div class="absolute inset-0 bg-neon-amber/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 relative z-10">Mitigations Applied</div>
+                <div class="text-3xl font-bold text-neon-amber drop-shadow-[0_0_8px_rgba(255,176,0,0.4)] relative z-10" id="mitigations-applied">0</div>
+                <div class="text-xs text-slate-500 mt-2 relative z-10">Actions taken</div>
             </div>
-            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
-                <div class="text-slate-400 text-sm mb-2">Uptime</div>
-                <div class="text-3xl font-bold text-neon-green" id="uptime">99%</div>
-                <div class="text-xs text-slate-500 mt-2">Last 30 days</div>
+            <div class="glass-panel spotlight-card rounded-xl p-5 relative overflow-hidden group">
+                 <div class="absolute inset-0 bg-neon-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 relative z-10">Uptime</div>
+                <div class="text-3xl font-bold text-neon-green drop-shadow-[0_0_8px_rgba(0,255,157,0.4)] relative z-10" id="uptime">99%</div>
+                <div class="text-xs text-slate-500 mt-2 relative z-10">Last 30 days</div>
             </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Live Traffic Monitor -->
-            <div class="col-span-2 bg-surface-dark border border-white/5 rounded-xl p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-bold flex items-center gap-2">
+            <div class="lg:col-span-2 glass-panel spotlight-card rounded-xl p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-lg font-bold flex items-center gap-2 text-white">
                         <span class="material-symbols-outlined text-primary">monitoring</span>
                         Live Traffic Monitor
                     </h2>
-                    <span
-                        class="text-xs bg-neon-green/20 text-neon-green px-3 py-1 rounded-full font-semibold">LIVE</span>
+                    <div class="flex items-center gap-2">
+                        <span class="size-2 rounded-full bg-neon-green animate-pulse"></span>
+                        <span class="text-xs font-bold text-neon-green uppercase tracking-wider">LIVE</span>
+                    </div>
                 </div>
 
-                <div id="traffic-list" class="space-y-2 max-h-[400px] overflow-y-auto">
-                    <div class="text-center text-slate-500 py-8">
-                        <span class="material-symbols-outlined text-4xl mb-2 block">network_check</span>
-                        No traffic data available
+                <div id="traffic-list" class="space-y-2 max-h-[400px] overflow-y-auto custom-scrollbar pr-2 min-h-[200px]">
+                    <div class="h-full flex flex-col items-center justify-center text-slate-500 py-8">
+                        <span class="material-symbols-outlined text-4xl mb-2 opacity-50">network_check</span>
+                        <span class="text-sm">No traffic data available</span>
                     </div>
                 </div>
             </div>
 
             <!-- Running Applications -->
-            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
-                <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <div class="glass-panel spotlight-card rounded-xl p-6">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2 text-white">
                     <span class="material-symbols-outlined text-neon-green">apps</span>
                     Running Services
                 </h2>
                 <div id="applications-list" class="space-y-3">
-                    <div class="bg-white/5 border border-white/10 rounded-lg p-3">
-                        <div class="flex items-center gap-3 mb-2">
-                            <div class="size-8 bg-primary/20 rounded flex items-center justify-center">
-                                <span class="material-symbols-outlined text-primary !text-sm">terminal</span>
+                    <div class="bg-white/5 border border-white/10 rounded-lg p-3 group hover:border-primary/30 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <div class="size-10 bg-primary/20 rounded-lg flex items-center justify-center border border-primary/20 shadow-[0_0_10px_rgba(19,127,236,0.1)]">
+                                <span class="material-symbols-outlined text-primary !text-lg">terminal</span>
                             </div>
                             <div class="flex-1">
-                                <div class="text-sm font-bold">Threat Detector</div>
-                                <div class="text-xs text-slate-500">Port 5000</div>
+                                <div class="text-sm font-bold text-white group-hover:text-primary transition-colors">Threat Detector</div>
+                                <div class="text-xs text-slate-500 font-mono">Port 5000</div>
                             </div>
-                            <div class="size-2 bg-neon-green rounded-full"></div>
+                            <div class="size-2 bg-neon-green rounded-full shadow-[0_0_5px_rgba(0,255,157,0.5)]"></div>
                         </div>
                     </div>
-                    <div class="bg-white/5 border border-white/10 rounded-lg p-3">
-                        <div class="flex items-center gap-3 mb-2">
-                            <div class="size-8 bg-neon-amber/20 rounded flex items-center justify-center">
-                                <span class="material-symbols-outlined text-neon-amber !text-sm">database</span>
+                    <div class="bg-white/5 border border-white/10 rounded-lg p-3 group hover:border-neon-amber/30 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <div class="size-10 bg-neon-amber/20 rounded-lg flex items-center justify-center border border-neon-amber/20 shadow-[0_0_10px_rgba(255,176,0,0.1)]">
+                                <span class="material-symbols-outlined text-neon-amber !text-lg">database</span>
                             </div>
                             <div class="flex-1">
-                                <div class="text-sm font-bold">Log Collector</div>
-                                <div class="text-xs text-slate-500">Background</div>
+                                <div class="text-sm font-bold text-white group-hover:text-neon-amber transition-colors">Log Collector</div>
+                                <div class="text-xs text-slate-500 font-mono">Background</div>
                             </div>
-                            <div class="size-2 bg-neon-green rounded-full"></div>
+                            <div class="size-2 bg-neon-green rounded-full shadow-[0_0_5px_rgba(0,255,157,0.5)]"></div>
                         </div>
                     </div>
-                    <div class="bg-white/5 border border-white/10 rounded-lg p-3">
-                        <div class="flex items-center gap-3 mb-2">
-                            <div class="size-8 bg-neon-red/20 rounded flex items-center justify-center">
-                                <span class="material-symbols-outlined text-neon-red !text-sm">security</span>
+                    <div class="bg-white/5 border border-white/10 rounded-lg p-3 group hover:border-neon-red/30 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <div class="size-10 bg-neon-red/20 rounded-lg flex items-center justify-center border border-neon-red/20 shadow-[0_0_10px_rgba(255,77,77,0.1)]">
+                                <span class="material-symbols-outlined text-neon-red !text-lg">security</span>
                             </div>
                             <div class="flex-1">
-                                <div class="text-sm font-bold">Firewall Monitor</div>
-                                <div class="text-xs text-slate-500">System</div>
+                                <div class="text-sm font-bold text-white group-hover:text-neon-red transition-colors">Firewall Monitor</div>
+                                <div class="text-xs text-slate-500 font-mono">System</div>
                             </div>
-                            <div class="size-2 bg-neon-green rounded-full"></div>
+                            <div class="size-2 bg-neon-green rounded-full shadow-[0_0_5px_rgba(0,255,157,0.5)]"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Threats Timeline -->
-        <div class="mt-6 bg-surface-dark border border-white/5 rounded-xl p-6">
-            <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
-                <span class="material-symbols-outlined text-neon-red">warning</span>
-                Recent Threats
-            </h2>
-            <div id="threats-timeline" class="space-y-3 max-h-[300px] overflow-y-auto">
-                <div class="text-center text-slate-500 py-8">
-                    <span class="material-symbols-outlined text-4xl mb-2 block">verified_user</span>
-                    No threats detected
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <!-- Threats Timeline -->
+            <div class="glass-panel spotlight-card rounded-xl p-6">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2 text-white">
+                    <span class="material-symbols-outlined text-neon-red">warning</span>
+                    Recent Threats
+                </h2>
+                <div id="threats-timeline" class="space-y-3 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
+                    <div class="text-center text-slate-500 py-8">
+                        <span class="material-symbols-outlined text-4xl mb-2 block opacity-50">verified_user</span>
+                        <div class="text-sm">No threats detected</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Applied Mitigations -->
-        <div class="mt-6 bg-surface-dark border border-white/5 rounded-xl p-6">
-            <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
-                <span class="material-symbols-outlined text-neon-amber">shield</span>
-                Applied Mitigations
-            </h2>
-            <div id="mitigations-list" class="space-y-3 max-h-[300px] overflow-y-auto">
-                <div class="text-center text-slate-500 py-8">
-                    <span class="material-symbols-outlined text-4xl mb-2 block">shield_with_house</span>
-                    No mitigations applied yet
+            <!-- Applied Mitigations -->
+            <div class="glass-panel spotlight-card rounded-xl p-6">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2 text-white">
+                    <span class="material-symbols-outlined text-neon-amber">shield</span>
+                    Applied Mitigations
+                </h2>
+                <div id="mitigations-list" class="space-y-3 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
+                    <div class="text-center text-slate-500 py-8">
+                        <span class="material-symbols-outlined text-4xl mb-2 block opacity-50">shield_with_house</span>
+                        <div class="text-sm">No mitigations applied yet</div>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
+    <script src="/static/js/ui.js"></script>
     <script>
         const API_BASE = window.location.origin;
         let instanceId = null;
@@ -334,19 +391,21 @@
 
             const statusIcon = document.getElementById('status-icon');
             const statusText = document.getElementById('status-text');
-            const lastSeen = document.getElementById('last-seen');
+            
+            // Note: last-seen element removed from new design header to keep it clean
+            // We could add it back if needed, but the list view shows it.
 
             if (instanceData.status === 'online') {
-                statusIcon.className = 'material-symbols-outlined text-sm text-neon-green';
-                statusText.className = 'text-xs font-semibold uppercase text-neon-green';
+                statusIcon.className = 'material-symbols-outlined text-[10px] text-neon-green animate-pulse';
+                statusText.className = 'text-[10px] font-bold uppercase tracking-wider text-neon-green';
                 statusText.textContent = 'Online';
+                statusText.parentElement.className = 'flex items-center gap-1.5 px-2 py-0.5 rounded bg-neon-green/10 border border-neon-green/20 shadow-[0_0_10px_rgba(0,255,157,0.2)]';
             } else {
-                statusIcon.className = 'material-symbols-outlined text-sm text-slate-400';
-                statusText.className = 'text-xs font-semibold uppercase text-slate-400';
+                statusIcon.className = 'material-symbols-outlined text-[10px] text-slate-400';
+                statusText.className = 'text-[10px] font-bold uppercase tracking-wider text-slate-400';
                 statusText.textContent = 'Offline';
+                 statusText.parentElement.className = 'flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/40 border border-white/10';
             }
-
-            lastSeen.textContent = `Last seen: ${new Date(instanceData.last_seen).toLocaleString()}`;
         }
 
         // Update statistics
@@ -355,7 +414,7 @@
             document.getElementById('total-requests').textContent = metrics.total_requests || 0;
             document.getElementById('threats-detected').textContent = metrics.threats_detected || 0;
             document.getElementById('mitigations-applied').textContent = metrics.mitigations_applied || 0;
-            document.getElementById('uptime').textContent = (metrics.uptime || 99) + '%';
+             document.getElementById('uptime').textContent = (metrics.uptime || 99) + '%';
         }
 
         // Load traffic data from backend
@@ -369,16 +428,16 @@
                 if (data.success && data.entries.length > 0) {
                     trafficList.innerHTML = data.entries.map(entry => {
                         return `
-                            <div class="bg-white/5 border border-white/10 rounded-lg p-3 hover:border-primary/30 transition-all">
-                                <div class="text-xs font-mono text-slate-300">${entry}</div>
+                            <div class="bg-black/30 border border-white/5 rounded pl-3 pr-2 py-2 hover:border-primary/30 transition-all flex items-center justify-between group">
+                                <div class="text-[10px] font-mono text-slate-400 group-hover:text-primary transition-colors truncate w-full">${entry}</div>
                             </div>
                         `;
                     }).join('');
                 } else {
                     trafficList.innerHTML = `
-                        <div class="text-center text-slate-500 py-8">
-                            <span class="material-symbols-outlined text-4xl mb-2 block">network_check</span>
-                            No traffic data available
+                        <div class="h-full flex flex-col items-center justify-center text-slate-500 py-8">
+                            <span class="material-symbols-outlined text-4xl mb-2 opacity-50">network_check</span>
+                            <span class="text-sm">No traffic data available</span>
                         </div>
                     `;
                 }
@@ -398,19 +457,21 @@
                 if (data.success && data.entries.length > 0) {
                     threatsList.innerHTML = data.entries.map(entry => {
                         return `
-                            <div class="bg-neon-red/10 border border-neon-red/30 rounded-lg p-3">
+                            <div class="bg-neon-red/5 border border-neon-red/20 rounded-lg p-3 hover:bg-neon-red/10 transition-colors">
                                 <div class="flex items-start gap-3">
-                                    <span class="material-symbols-outlined text-neon-red">warning</span>
-                                    <div class="flex-1 text-xs font-mono text-slate-300">${entry}</div>
+                                    <div class="min-w-6 mt-0.5">
+                                        <span class="material-symbols-outlined text-neon-red text-lg">warning</span>
+                                    </div>
+                                    <div class="flex-1 text-xs font-mono text-slate-300 break-all">${entry}</div>
                                 </div>
                             </div>
                         `;
                     }).join('');
                 } else {
                     threatsList.innerHTML = `
-                        <div class="text-center text-slate-500 py-8">
-                            <span class="material-symbols-outlined text-4xl mb-2 block">verified_user</span>
-                            No threats detected
+                         <div class="h-full flex flex-col items-center justify-center text-slate-500 py-8">
+                            <span class="material-symbols-outlined text-4xl mb-2 block opacity-50">verified_user</span>
+                            <div class="text-sm">No threats detected</div>
                         </div>
                     `;
                 }
@@ -430,19 +491,21 @@
                 if (data.success && data.entries.length > 0) {
                     mitigationsList.innerHTML = data.entries.map(entry => {
                         return `
-                            <div class="bg-neon-amber/10 border border-neon-amber/30 rounded-lg p-3">
+                            <div class="bg-neon-amber/5 border border-neon-amber/20 rounded-lg p-3 hover:bg-neon-amber/10 transition-colors">
                                 <div class="flex items-start gap-3">
-                                    <span class="material-symbols-outlined text-neon-amber">shield</span>
-                                    <div class="flex-1 text-xs font-mono text-slate-300">${entry}</div>
+                                    <div class="min-w-6 mt-0.5">
+                                        <span class="material-symbols-outlined text-neon-amber text-lg">shield</span>
+                                    </div>
+                                    <div class="flex-1 text-xs font-mono text-slate-300 break-all">${entry}</div>
                                 </div>
                             </div>
                         `;
                     }).join('');
                 } else {
                     mitigationsList.innerHTML = `
-                        <div class="text-center text-slate-500 py-8">
-                            <span class="material-symbols-outlined text-4xl mb-2 block">shield_with_house</span>
-                            No mitigations applied yet
+                        <div class="h-full flex flex-col items-center justify-center text-slate-500 py-8">
+                            <span class="material-symbols-outlined text-4xl mb-2 block opacity-50">shield_with_house</span>
+                            <div class="text-sm">No mitigations applied yet</div>
                         </div>
                     `;
                 }
@@ -461,14 +524,24 @@
             if (!instanceId) return;
 
             try {
-                await fetch(`${API_BASE}/api/users/${instanceId}/status`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: 'online' })
-                });
-
-                alert('Connection test initiated');
-                await refreshInstance();
+                const btn = document.activeElement;
+                if(btn) {
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = `<span class="material-symbols-outlined !text-sm animate-spin">sync</span> Testing...`;
+                
+                    await fetch(`${API_BASE}/api/users/${instanceId}/status`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: 'online' })
+                    });
+    
+                    await refreshInstance();
+                    
+                    // Reset button after small delay
+                    setTimeout(() => {
+                         btn.innerHTML = originalText;
+                    }, 500);
+                }
             } catch (error) {
                 console.error('Error testing connection:', error);
                 alert('Failed to test connection');
@@ -484,12 +557,20 @@
             workflowDisplay.classList.remove('hidden');
 
             // Reset workflow steps
-            document.getElementById('step-payload').className = 'bg-primary/20 border border-primary/50 rounded-lg p-4 text-center transition-all';
-            document.getElementById('step-detection').className = 'bg-white/5 border border-white/10 rounded-lg p-4 text-center transition-all';
-            document.getElementById('step-mitigation').className = 'bg-white/5 border border-white/10 rounded-lg p-4 text-center transition-all';
+            const payloadStep = document.getElementById('step-payload');
+            const detectionStep = document.getElementById('step-detection');
+            const mitigationStep = document.getElementById('step-mitigation');
+            
+            // Reset styles
+            payloadStep.className = 'glass-panel border border-primary/30 rounded-lg p-5 text-center relative overflow-hidden transition-all duration-500';
+            payloadStep.querySelector('.size-12').className = 'size-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3 text-primary border border-primary/20 animate-pulse';
+            
+            detectionStep.className = 'glass-panel border border-white/10 rounded-lg p-5 text-center relative overflow-hidden transition-all duration-500 grayscale opacity-50';
+            mitigationStep.className = 'glass-panel border border-white/10 rounded-lg p-5 text-center relative overflow-hidden transition-all duration-500 grayscale opacity-50';
+            
             document.getElementById('payload-info').textContent = `Sending ${attackType.toUpperCase()} payload...`;
-            document.getElementById('detection-info').textContent = '-';
-            document.getElementById('mitigation-info').textContent = '-';
+            document.getElementById('detection-info').textContent = 'Waiting...';
+            document.getElementById('mitigation-info').textContent = 'Waiting...';
 
             try {
                 const response = await fetch(`${API_BASE}/api/users/${instanceId}/trigger-payload`, {
@@ -503,44 +584,57 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    // Update step 1: Payload sent
-                    document.getElementById('payload-info').textContent = `${attackType.toUpperCase()} - ${result.payload.rate} req/s, ${result.payload.sbytes} bytes`;
+                    // Update step 1: Payload sent (Success state)
+                    document.getElementById('payload-info').textContent = `${attackType.toUpperCase()} - ${result.payload.rate} req/s`;
+                    payloadStep.querySelector('.size-12').className = 'size-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3 text-primary border border-primary/20';
+                    payloadStep.querySelector('.size-12').innerHTML = '<span class="material-symbols-outlined text-2xl">check</span>';
 
-                    // Update step 2: Detection
+                    // Activate step 2: Detection
                     setTimeout(() => {
-                        const isAttack = result.status === 'THREAT';
-                        const detectionEl = document.getElementById('step-detection');
+                        detectionStep.classList.remove('grayscale', 'opacity-50');
+                        detectionStep.querySelector('.size-12').className = 'size-12 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-500 border border-white/10 animate-spin';
+                        document.getElementById('detection-info').textContent = 'Analyzing patterns...';
 
-                        if (isAttack) {
-                            detectionEl.className = 'bg-neon-red/20 border border-neon-red/50 rounded-lg p-4 text-center transition-all';
-                            detectionEl.querySelector('.material-symbols-outlined').className = 'material-symbols-outlined text-4xl text-neon-red mb-2';
-                            detectionEl.querySelector('.text-sm').className = 'text-sm font-bold text-neon-red';
-                            document.getElementById('detection-info').textContent = `⚠️ ${result.detection_result.attack_type} detected (${(result.detection_result.confidence * 100).toFixed(1)}% confidence)`;
-                        } else {
-                            detectionEl.className = 'bg-neon-green/20 border border-neon-green/50 rounded-lg p-4 text-center transition-all';
-                            detectionEl.querySelector('.material-symbols-outlined').className = 'material-symbols-outlined text-4xl text-neon-green mb-2';
-                            detectionEl.querySelector('.text-sm').className = 'text-sm font-bold text-neon-green';
-                            document.getElementById('detection-info').textContent = '✅ Traffic is normal';
-                        }
-
-                        // Update step 3: Mitigation
                         setTimeout(() => {
-                            if (isAttack && result.mitigation) {
-                                const mitigationEl = document.getElementById('step-mitigation');
-                                mitigationEl.className = 'bg-neon-amber/20 border border-neon-amber/50 rounded-lg p-4 text-center transition-all';
-                                mitigationEl.querySelector('.material-symbols-outlined').className = 'material-symbols-outlined text-4xl text-neon-amber mb-2';
-                                mitigationEl.querySelector('.text-sm').className = 'text-sm font-bold text-neon-amber';
-                                document.getElementById('mitigation-info').textContent = `🛡️ ${result.mitigation.action}`;
+                            const isAttack = result.status === 'THREAT';
+                            detectionStep.querySelector('.size-12').classList.remove('animate-spin');
+
+                            if (isAttack) {
+                                detectionStep.className = 'glass-panel border border-neon-red/50 rounded-lg p-5 text-center relative overflow-hidden bg-neon-red/5';
+                                detectionStep.querySelector('.size-12').className = 'size-12 bg-neon-red/20 rounded-full flex items-center justify-center mx-auto mb-3 text-neon-red border border-neon-red/20 shadow-[0_0_15px_rgba(255,77,77,0.3)]';
+                                detectionStep.querySelector('.size-12').innerHTML = '<span class="material-symbols-outlined text-2xl">warning</span>';
+                                detectionStep.querySelector('.text-sm').className = 'text-sm font-bold text-neon-red uppercase tracking-wide';
+                                document.getElementById('detection-info').textContent = `⚠️ ${result.detection_result.attack_type}`;
                             } else {
-                                document.getElementById('step-mitigation').querySelector('.text-sm').textContent = 'No action needed';
-                                document.getElementById('mitigation-info').textContent = 'Traffic allowed';
+                                detectionStep.className = 'glass-panel border border-neon-green/50 rounded-lg p-5 text-center relative overflow-hidden bg-neon-green/5';
+                                detectionStep.querySelector('.size-12').className = 'size-12 bg-neon-green/20 rounded-full flex items-center justify-center mx-auto mb-3 text-neon-green border border-neon-green/20 shadow-[0_0_15px_rgba(0,255,157,0.3)]';
+                                detectionStep.querySelector('.size-12').innerHTML = '<span class="material-symbols-outlined text-2xl">check_circle</span>';
+                                detectionStep.querySelector('.text-sm').className = 'text-sm font-bold text-neon-green uppercase tracking-wide';
+                                document.getElementById('detection-info').textContent = '✅ Normal Traffic';
                             }
 
-                            // Refresh data after a short delay
+                            // Activate step 3: Mitigation
                             setTimeout(() => {
-                                refreshInstance();
-                            }, 1000);
-                        }, 800);
+                                mitigationStep.classList.remove('grayscale', 'opacity-50');
+                                
+                                if (isAttack && result.mitigation) {
+                                    mitigationStep.className = 'glass-panel border border-neon-amber/50 rounded-lg p-5 text-center relative overflow-hidden bg-neon-amber/5';
+                                    mitigationStep.querySelector('.size-12').className = 'size-12 bg-neon-amber/20 rounded-full flex items-center justify-center mx-auto mb-3 text-neon-amber border border-neon-amber/20 shadow-[0_0_15px_rgba(255,176,0,0.3)]';
+                                    mitigationStep.querySelector('.size-12').innerHTML = '<span class="material-symbols-outlined text-2xl">shield</span>';
+                                    mitigationStep.querySelector('.text-sm').className = 'text-sm font-bold text-neon-amber uppercase tracking-wide';
+                                    document.getElementById('mitigation-info').textContent = `🛡️ ${result.mitigation.action}`;
+                                } else {
+                                    mitigationStep.className = 'glass-panel border border-white/10 rounded-lg p-5 text-center relative overflow-hidden';
+                                    mitigationStep.querySelector('.size-12').className = 'size-12 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-500 border border-white/10';
+                                    document.getElementById('mitigation-info').textContent = 'Traffic allowed';
+                                }
+
+                                // Refresh data after a short delay
+                                setTimeout(() => {
+                                    refreshInstance();
+                                }, 1000);
+                            }, 800);
+                        }, 1000);
                     }, 600);
                 } else {
                     alert(`Error: ${result.error || 'Failed to trigger payload'}`);

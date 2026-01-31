@@ -278,35 +278,25 @@ async function refreshLiveFeed() {
     }
 }
 
-/**
- * Create floating attack button
- */
-function createAttackButton() {
-    const button = document.createElement('button');
-    button.innerHTML = `
-        <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-2xl">science</span>
-            <div class="text-left">
-                <div class="text-sm font-bold">Test Attack Payload</div>
-                <div class="text-[10px] opacity-70">Click to simulate threats</div>
-            </div>
-        </div>
-    `;
-    button.className = 'fixed top-24 right-8 z-50 bg-gradient-to-r from-neon-red to-danger hover:from-danger hover:to-neon-red text-white px-6 py-4 rounded-xl shadow-2xl font-bold transition-all transform hover:scale-105 glow-red border-2 border-neon-red/30';
-    button.onclick = () => showAttackMenu();
-
-    document.body.appendChild(button);
-}
 
 /**
  * Show attack selection menu
  */
 function showAttackMenu() {
+    // Remove existing if open
+    const existing = document.getElementById('attack-menu-dropdown');
+    if (existing) {
+        existing.remove();
+        return;
+    }
+
     const menu = document.createElement('div');
-    menu.className = 'fixed top-40 right-8 z-50 bg-surface-dark border-2 border-white/10 rounded-xl shadow-2xl p-6 space-y-4 min-w-[320px]';
+    menu.id = 'attack-menu-dropdown';
+    // Position below the header button (top-16)
+    menu.className = 'fixed top-16 right-20 z-50 bg-[#0f172a] border border-white/20 rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] p-6 space-y-4 min-w-[320px] spotlight-card animate-in fade-in slide-in-from-top-4 duration-300';
     menu.innerHTML = `
         <div class="flex justify-between items-center border-b border-white/10 pb-3">
-            <h3 class="font-bold text-lg">Attack Simulator</h3>
+            <h3 class="font-bold text-lg text-white">Attack Simulator</h3>
             <button onclick="this.closest('.fixed').remove()" class="text-slate-400 hover:text-white">
                 <span class="material-symbols-outlined">close</span>
             </button>
@@ -314,22 +304,39 @@ function showAttackMenu() {
         <div class="space-y-2">
             ${Object.entries(ATTACK_PAYLOADS).map(([key, attack]) => `
                 <button onclick="window.sendHeavyPayload('${key}'); this.closest('.fixed').remove();" 
-                        class="w-full text-left px-4 py-3 bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-white/5 hover:border-primary/50">
-                    <div class="font-bold text-sm">${attack.name}</div>
+                        class="w-full text-left px-4 py-3 bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-white/5 hover:border-neon-blue/50 text-slate-200">
+                    <div class="font-bold text-sm text-neon-blue">${attack.name}</div>
                     <div class="text-xs text-slate-500 mt-1">Heavy payload | ${attack.payload.sbytes.toLocaleString()} bytes</div>
                 </button>
             `).join('')}
         </div>
         <hr class="border-white/10" />
         <button onclick="window.startAutoAttack(); this.closest('.fixed').remove();" 
-                class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition-all">
+                class="w-full bg-neon-red/20 hover:bg-neon-red/30 border border-neon-red/50 text-white font-bold py-3 rounded-lg transition-all shadow-[0_0_15px_rgba(248,81,73,0.2)]">
             ⚡ Start Auto-Attack Mode
         </button>
         <button onclick="window.stopAutoAttack(); this.closest('.fixed').remove();" 
-                class="w-full bg-white/5 hover:bg-white/10 text-white font-bold py-3 rounded-lg transition-all">
+                class="w-full bg-white/5 hover:bg-white/10 text-slate-300 font-bold py-3 rounded-lg transition-all">
             🛑 Stop Auto-Attack
         </button>
     `;
+    
+    // Add spotlight effect manually to dynamic menu
+    menu.addEventListener('mousemove', (e) => {
+        const rect = menu.getBoundingClientRect();
+        menu.style.setProperty('--x', `${e.clientX - rect.left}px`);
+        menu.style.setProperty('--y', `${e.clientY - rect.top}px`);
+    });
+
+    // Close when clicking outside
+    const closeListener = (e) => {
+        if (!menu.contains(e.target) && !e.target.closest('#header-attack-btn')) {
+            menu.remove();
+            document.removeEventListener('click', closeListener);
+        }
+    };
+    // Delay adding listener to prevent immediate closing
+    setTimeout(() => document.addEventListener('click', closeListener), 100);
 
     document.body.appendChild(menu);
 }
@@ -343,9 +350,6 @@ window.stopAutoAttack = stopAutoAttack;
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🛡️ Enterprise Security Dashboard Loaded');
 
-    // Create attack button
-    createAttackButton();
-
     // Auto-refresh live feed every 5 seconds
     setInterval(refreshLiveFeed, 5000);
 
@@ -353,5 +357,4 @@ document.addEventListener('DOMContentLoaded', () => {
     refreshLiveFeed();
 
     console.log('✅ Backend API connected at:', API_BASE);
-    console.log('💡 Click "Test Attack Payload" button to simulate threats');
 });

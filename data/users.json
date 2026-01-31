@@ -50,9 +50,9 @@
         "uptime": 0,
         "cpu_usage": 0,
         "memory_usage": 0,
-        "threats_detected": 2,
-        "total_requests": 3,
-        "mitigations_applied": 2
+        "threats_detected": 4,
+        "total_requests": 5,
+        "mitigations_applied": 4
       }
     }
   ]
